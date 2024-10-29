@@ -1,11 +1,10 @@
 #include "Database.h"
 
-void Database::print_db()
-{
-    for (const auto& row : table) {
-        for (const auto& col : row) {
-            std::cout << col << "\t"; 
-        }
-        std::cout << std::endl;
+
+std::string Database::createTable(const std::string& tableName) {
+    if (database.find(tableName) != database.end()) {
+        return "Table already exists.";
     }
+    database[tableName] = {};
+    return "Table created successfully.";
 }

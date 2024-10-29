@@ -1,19 +1,21 @@
+#pragma once
 #include <iostream>
+#include "Table.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <map>
 
 class Database {
 
     private:
-        int cols,rows;
-        std::vector <std::vector <std::string>> table;
+        std::string name;
+        std::unordered_map<std::string, Table> tables;
 
     public:
-        Database(int cols, int rows):cols(cols),rows(rows){}
         Database(){}
-        int getCols(){return cols;};
-        int getRows(){return rows;};
         void print_db();
+        std::string Database::createTable(const std::string& tableName);
         
 
 };

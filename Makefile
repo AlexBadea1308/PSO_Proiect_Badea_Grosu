@@ -4,7 +4,7 @@ CXXFLAGS = -Wall -g -std=c++11
 
 # Source files
 CLIENT_SRC = sandboxClient.cpp ClientConnection.cpp
-SERVER_SRC = servertest.cpp ClientConnection.cpp Server.cpp
+SERVER_SRC = servertest.cpp ClientConnection.cpp Server.cpp Database.cpp
 
 # Object files
 CLIENT_OBJS = $(CLIENT_SRC:.cpp=.o)
