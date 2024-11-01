@@ -63,12 +63,12 @@ int main() {
 
         else
         {
-            size_t pos = req.find(';');
+            // size_t pos = req.find(';');
     
-            if (pos != std::string::npos) 
-            {
-                req.erase(pos);
-            }
+            // if (pos != std::string::npos) 
+            // {
+            //     req.erase(pos);
+            // }
 
             send(sock,req.c_str(),req.size(),0);
 

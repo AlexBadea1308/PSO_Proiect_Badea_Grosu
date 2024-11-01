@@ -6,8 +6,26 @@ void Server::handleHello(int clientSocket)
     send(clientSocket, helloString.c_str(),helloString.size(), 0);
 }
 
-bool Server::Initialize(int port) {
+std::vector<std::string> Server::parseComm(std::string com)
+{   
+    std::vector<std::string> words;
+    std::istringstream stream(com);
+    std::string word;
 
+    while (stream >> word) {
+        words.push_back(word);
+    }
+
+    return words;
+}
+
+Database* Server::createDatabase(std::string dbName)
+{   
+        Database* new_db = new Database(dbName);
+        return new_db;
+}
+
+bool Server::Initialize(int port) {
 
     int addrlen = sizeof(address);
     char buffer[1024] = {0};
@@ -88,11 +106,22 @@ void Server::handleReq(int clientSocket) {
         handleHello(clientSocket);
         return;
     }
-
     else
     {
-        std::cout << request << std::endl;
-        return;
+       std::vector <std::string> com_vector = parseComm(request);
+       //std::cout<<com_vector[0]<<" "<<com_vector[1]<<std::endl;
+
+       if(com_vector[0]=="create_database")
+       {    
+            db = createDatabase(com_vector[1]);
+            std::cout<<"DB created!\n";
+       }
+
+       if(com_vector[0]=="create_table")
+       {
+            db->create_table(com_vector[1],com_vector);
+            std::cout<<"Table created successfully!\n";
+       }
     }
 
     return;

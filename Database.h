@@ -14,8 +14,11 @@ class Database {
 
     public:
         Database(){}
-        void print_db();
-        std::string Database::createTable(const std::string& tableName);
+        Database(const std::string& dbName) : name(dbName) {}
+        //Database(const Database& other): name(other.name), tables(other.tables) {}
+        
+        void create_table(std::string tableName, std::vector <std::string> cols);
+        void setName(const std::string& dbname);
         
 
 };

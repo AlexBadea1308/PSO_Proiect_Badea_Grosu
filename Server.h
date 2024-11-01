@@ -1,5 +1,6 @@
 #pragma once
 #include "ClientConnection.h"
+#include "Database.h"
 #include <condition_variable>
 #include <filesystem>
 #include <fstream>
@@ -8,7 +9,10 @@
 #include <mutex>
 #include <queue>
 #include <string>
+#include <memory>
 #include <thread>
+#include <vector>
+#include <sstream>
 
 
 class Server {
@@ -16,10 +20,11 @@ private:
     int serverSocket;
     struct sockaddr_in address;
     std::string last_event;
+    Database* db;
 
 public:
 
-    Server() {};
+    Server() { db=new Database();}
 
     ~Server();
 
@@ -33,4 +38,7 @@ public:
 
     void handleHello(int clientSocket);
 
+    std::vector <std::string> parseComm(std::string com);
+
+    Database* createDatabase(std::string dbName);
 };

@@ -11,4 +11,10 @@ class Column{
         std::string name;
         std::string type;
         std::vector <std::string> rows;
+
+    public:
+        Column(){}
+        Column(std::string colName,std::string type):name(colName),type(type){}
+
+        std::string getName();
 };
