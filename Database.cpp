@@ -21,7 +21,7 @@ void Database::create_table(std::string tableName, std::vector<std::string> cols
         {
             continue;
             std::cerr<<"error\n";
-          
+        
         }
 
         new_table->createColumn(colname,type);

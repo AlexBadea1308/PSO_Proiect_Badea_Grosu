@@ -3,6 +3,7 @@
 #include "Column.h"
 #include <string>
 #include <vector>
+#include <iomanip>
 #include <unordered_map>
 #include <map>
 
@@ -17,6 +18,7 @@ class Table{
         Table(const std::string& tableName) : name(tableName) {}
 
         void createColumn(std::string colName,std::string type);
+        void printTable();
 };
 
 /* create Database
