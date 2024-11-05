@@ -72,7 +72,7 @@ ClientConnection Server::AcceptConnections() {
     int clientSocket = accept(serverSocket, (struct sockaddr *)&address, (socklen_t*)&addrlen);
     if (clientSocket < 0) {
         std::cerr << "Accept failed\n";
-        exit(1);
+        //exit(1);
     }
 
     std::cout << "Client connected\n";
@@ -109,7 +109,6 @@ void Server::handleReq(int clientSocket) {
     else
     {
        std::vector <std::string> com_vector = parseComm(request);
-       //std::cout<<com_vector[0]<<" "<<com_vector[1]<<std::endl;
 
        if(com_vector[0]=="create_database")
        {    
@@ -118,7 +117,7 @@ void Server::handleReq(int clientSocket) {
        }
 
        if(com_vector[0]=="create_table")
-       {
+       {    
             db->create_table(com_vector[1],com_vector);
             std::cout<<"Table created successfully!\n";
        }
