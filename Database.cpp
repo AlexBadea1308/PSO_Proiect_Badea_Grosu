@@ -17,8 +17,10 @@ void Database::create_table(std::string tableName, std::vector<std::string> cols
              type = i.substr(comma + 1, end - comma - 1);
         }   
         else
-        {
+        {   
+            continue;
             std::cerr<<"error\n";
+
         }
 
         new_table->createColumn(colname,type);
