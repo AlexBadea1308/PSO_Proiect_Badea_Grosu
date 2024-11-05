@@ -6,6 +6,11 @@ void Server::handleHello(int clientSocket)
     send(clientSocket, helloString.c_str(),helloString.size(), 0);
 }
 
+void Server::handleInsert(int clientSocket, std::string tableName)
+{
+    //
+}
+
 std::vector<std::string> Server::parseComm(std::string com)
 {   
     std::vector<std::string> words;
@@ -115,13 +120,26 @@ void Server::handleReq(int clientSocket) {
        {    
             db = createDatabase(com_vector[1]);
             std::cout<<"DB created!\n";
+            std::string response = "DB " + com_vector[1] + " created successfully!\n";
+            send(clientSocket, response.c_str(),response.size(), 0);
        }
 
        if(com_vector[0]=="create_table")
        {
             db->create_table(com_vector[1],com_vector);
             std::cout<<"Table created successfully!\n";
+            std::string response = "Table created successfully!\n";
+            send(clientSocket, response.c_str(),response.size(), 0);
        }
+
+        if(com_vector[0]=="insert")
+       {
+            handleInsert();
+            std::cout<<"Row inserted successfully!\n";
+            std::string response = "Row inserted successfully!\n";
+            send(clientSocket, response.c_str(),response.size(), 0);
+       }
+
     }
 
     return;

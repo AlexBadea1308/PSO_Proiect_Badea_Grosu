@@ -38,6 +38,8 @@ public:
 
     void handleHello(int clientSocket);
 
+    void handleInsert(int clientSocket, std::string tableName);
+
     std::vector <std::string> parseComm(std::string com);
 
     Database* createDatabase(std::string dbName);
