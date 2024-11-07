@@ -65,7 +65,9 @@ std::string Server::handlePrintTable(const std::string &tableName)
     //std::cout<<tab<<std::endl;
     return tab;
 }
-
+/// @brief 
+/// @param port 
+/// @return 
 bool Server::Initialize(int port) {
 
     int addrlen = sizeof(address);
@@ -113,7 +115,7 @@ ClientConnection Server::AcceptConnections() {
     int clientSocket = accept(serverSocket, (struct sockaddr *)&address, (socklen_t*)&addrlen);
     if (clientSocket < 0) {
         std::cerr << "Accept failed\n";
-        exit(1);
+        //exit(1);
     }
 
     std::cout << "Client connected\n";
@@ -150,7 +152,10 @@ void Server::handleReq(int clientSocket) {
     else
     {
        std::vector <std::string> com_vector = parseComm(request);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 14fe4a454c09c57770afb7b5f9fbf407000b2a2f
 
        if(com_vector[0]=="create_database")
        {    
@@ -161,7 +166,7 @@ void Server::handleReq(int clientSocket) {
        }
 
        if(com_vector[0]=="create_table")
-       {
+       {    
             db->create_table(com_vector[1],com_vector);
             std::cout<<"Table created successfully!\n";
             std::string response = "Table created successfully!\n";
