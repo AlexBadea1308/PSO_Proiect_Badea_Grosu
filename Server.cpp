@@ -65,9 +65,7 @@ std::string Server::handlePrintTable(const std::string &tableName)
     //std::cout<<tab<<std::endl;
     return tab;
 }
-/// @brief 
-/// @param port 
-/// @return 
+
 bool Server::Initialize(int port) {
 
     int addrlen = sizeof(address);
