@@ -150,10 +150,6 @@ void Server::handleReq(int clientSocket) {
     else
     {
        std::vector <std::string> com_vector = parseComm(request);
-<<<<<<< HEAD
-
-=======
->>>>>>> 14fe4a454c09c57770afb7b5f9fbf407000b2a2f
 
        if(com_vector[0]=="create_database")
        {    
