@@ -19,4 +19,11 @@ class Column{
         std::string getName();
         const std::vector<std::string> getRows() const;
         void addRow(const std::string& row);
+        std::string getType(){return type;}
+        ~Column()
+        {
+            name="";
+            type="";
+            rows.clear();
+        }
 };

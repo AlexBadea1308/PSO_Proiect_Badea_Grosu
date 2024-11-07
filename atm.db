@@ -1,4 +1,4 @@
 std
-age  21
-nume  alex
+age int  21
+nume string  Alex
 *

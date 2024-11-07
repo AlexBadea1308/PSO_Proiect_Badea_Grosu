@@ -86,8 +86,9 @@ std::string Server::handleSave(std::string db_name)
         outFile << table.first<< "\n";
         Table t=table.second;
         for (const auto& column : t.getAllColumns())
-        {
-            outFile << column.first<<" ";
+        {   
+            Column c=column.second;
+            outFile << column.first<<" "<<c.getType()<<" ";
 
             for (const auto& value : column.second.getRows())
             {
@@ -101,6 +102,57 @@ std::string Server::handleSave(std::string db_name)
     outFile.close();
     return std::string("Database saved successfully!");
 }
+
+std::string Server::handleLoadDB(std::string db_name) 
+{
+    std::string filename = db_name + ".db";
+    std::ifstream inFile(filename);
+
+    if (!inFile.is_open()) {
+        return "Error loading database!";
+    }
+
+    free(db);
+    db=createDatabase(db_name);
+    // Golește baza de date înainte de a încărca datele din fișier
+
+    std::string line;
+    Table* currentTable = nullptr;  // Tabelul curent în care vom adăuga coloane și rânduri
+
+    while (std::getline(inFile, line)) {
+        if (line == "*") {
+            // Marchează sfârșitul unui tabel, continuăm la următorul
+            currentTable = nullptr;
+            continue;
+        }
+        std::istringstream iss(line);
+        std::string name, type;
+        iss >> name;
+
+        if (currentTable == nullptr) {
+            // Dacă currentTable este nullptr, înseamnă că avem un nou tabel
+            currentTable = new Table(name);
+            db->addTable(*currentTable);  // Adaugă tabelul în baza de date
+        } else {
+            // Dacă avem deja un tabel curent, atunci aceasta este o coloană
+        
+            iss >> type;
+            Column column(type);
+            
+            // Adaugă valorile în coloană
+            std::string value;
+            while (iss >> value) {
+                column.addRow(value);
+            }
+            
+            currentTable->addColumn(name, column);  // Adaugă coloana în tabel
+        }
+    }
+
+    inFile.close();
+    return "Database loaded successfully!";
+}
+
 
 bool Server::Initialize(int port) {
 
@@ -212,6 +264,11 @@ void Server::handleReq(int clientSocket) {
          if(com_vector[0]=="save")
        {    std::string response="";
             response=handleSave(com_vector[1]);
+            send(clientSocket, response.c_str(),response.size(), 0);
+       }
+          if(com_vector[0]=="load")
+       {    std::string response="";
+            response=handleLoadDB(com_vector[1]);
             send(clientSocket, response.c_str(),response.size(), 0);
        }
     return;

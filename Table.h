@@ -33,6 +33,12 @@ class Table{
     }
 
     std::map <std::string, Column> getAllColumns(){return columns;}
+
+    ~Table()
+    {
+        name="";
+        columns.clear();
+    }
 };
 
 /* create Database

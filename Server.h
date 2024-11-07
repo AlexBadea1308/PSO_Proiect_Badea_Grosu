@@ -50,4 +50,6 @@ public:
 
     std::string handleSave(std::string db_name);
 
+    std::string handleLoadDB(std::string db_name);
+
 };
