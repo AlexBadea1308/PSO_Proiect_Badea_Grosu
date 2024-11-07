@@ -67,17 +67,18 @@ std::string Server::handlePrintTable(const std::string &tableName)
 
 std::string Server::handleSave(std::string db_name)
 {
-    if (db_name.compare(db->getName()) != 0)
-    {
-        return "You selected the wrong database to save!\n";
+    if (db_name!=db->getName())
+    {   
+        
+        return std::string("You selected the wrong database to save!\n");
     }
 
     std::string filename = db_name + ".db";
     std::ofstream outFile(filename);
 
     if (!outFile.is_open())
-    {
-        return "Error saving database!";
+    {   
+        return std::string("Error saving database!");
     }
 
     for (const auto& table : db->getAllTables())
@@ -92,14 +93,13 @@ std::string Server::handleSave(std::string db_name)
             {
                 outFile << " " << value;
             }
-
             outFile << "\n";
         }
 
         outFile << "*\n";
     }
     outFile.close();
-    return "Database saved successfully!";
+    return std::string("Database saved successfully!");
 }
 
 bool Server::Initialize(int port) {
@@ -166,7 +166,7 @@ Server::~Server() {
 }
 
 void Server::handleReq(int clientSocket) {
-    char buffer[102400] = { 0 };
+    char buffer[1024] = { 0 };
     
     int bytesReceived = read(clientSocket, buffer, sizeof(buffer));
 
@@ -177,15 +177,7 @@ void Server::handleReq(int clientSocket) {
     }
 
     std::string request(buffer);
-
-    if (request == "HELLO") {
-        std::cout << "Hello requested\n";
-        handleHello(clientSocket);
-        return;
-    }
-    else
-    {
-       std::vector <std::string> com_vector = parseComm(request);
+    std::vector <std::string> com_vector = parseComm(request);
 
        if(com_vector[0]=="create_database")
        {    
@@ -218,13 +210,10 @@ void Server::handleReq(int clientSocket) {
        }
 
          if(com_vector[0]=="save")
-       {    std::string response;
+       {    std::string response="";
             response=handleSave(com_vector[1]);
-            //std::string response = "DB saved successfully\n";
             send(clientSocket, response.c_str(),response.size(), 0);
        }
-    }
-
     return;
 }
 

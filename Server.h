@@ -48,6 +48,6 @@ public:
 
     std::string handlePrintTable(const std::string& tableName);
 
-    std::string Server::handleSave(std::string db_name);
+    std::string handleSave(std::string db_name);
 
 };

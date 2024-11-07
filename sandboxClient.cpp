@@ -43,28 +43,6 @@ int main() {
             close(sock);
             return 1;
         }
-
-        if (req == "hello")
-        {   
-            std::string helloReq="HELLO";
-            send(sock,helloReq.c_str(),helloReq.size(),0);
-
-        char buffer[1024] = { 0 };
-        int bytesReceived = read(sock, buffer, sizeof(buffer));
-
-        if (bytesReceived == 0) {
-            std::cerr << "Receive failed\n";
-            close(sock);            
-            return 1;
-        }
-        std::cout<<buffer;
-        continue;
-        }
-
-        else
-        {
-           
-
             send(sock,req.c_str(),req.size(),0);
             char buffer[1024] = { 0 };
             int bytesReceived = read(sock, buffer, sizeof(buffer));
@@ -77,8 +55,6 @@ int main() {
             
             std::cout<<buffer;
             continue;
-        }
-    
     }  
     return 0;
 }

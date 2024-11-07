@@ -30,7 +30,7 @@ class Database {
 
         std::string getName(){return name;}
 
-        std::unordered_map<std::string,Table>& getAllTables(){return tables;}
+        std::unordered_map<std::string,Table> getAllTables(){return tables;}
 };
 
 //database

@@ -32,7 +32,7 @@ class Table{
         return columns.find(columnName) != columns.end();
     }
 
-    std::map <std::string, Column>& getAllColumns(){return columns;}
+    std::map <std::string, Column> getAllColumns(){return columns;}
 };
 
 /* create Database
