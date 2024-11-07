@@ -27,9 +27,12 @@ class Table{
             return name;
         }
 
-    bool hasColumn(const std::string& columnName) const {
+    bool hasColumn(const std::string& columnName) const 
+    {
         return columns.find(columnName) != columns.end();
     }
+
+    std::map <std::string, Column>& getAllColumns(){return columns;}
 };
 
 /* create Database

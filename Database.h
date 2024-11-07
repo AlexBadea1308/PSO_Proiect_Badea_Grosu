@@ -27,6 +27,10 @@ class Database {
         void addTable(const Table& table) {
             tables[table.getName()] = table;
         }
+
+        std::string getName(){return name;}
+
+        std::unordered_map<std::string,Table>& getAllTables(){return tables;}
 };
 
 //database

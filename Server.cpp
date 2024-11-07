@@ -62,8 +62,44 @@ Database* Server::createDatabase(std::string dbName)
 std::string Server::handlePrintTable(const std::string &tableName)
 {
     std::string tab = db->getTable(tableName).printTable();
-    //std::cout<<tab<<std::endl;
     return tab;
+}
+
+std::string Server::handleSave(std::string db_name)
+{
+    if (db_name.compare(db->getName()) != 0)
+    {
+        return "You selected the wrong database to save!\n";
+    }
+
+    std::string filename = db_name + ".db";
+    std::ofstream outFile(filename);
+
+    if (!outFile.is_open())
+    {
+        return "Error saving database!";
+    }
+
+    for (const auto& table : db->getAllTables())
+    {
+        outFile << table.first<< "\n";
+        Table t=table.second;
+        for (const auto& column : t.getAllColumns())
+        {
+            outFile << column.first<<" ";
+
+            for (const auto& value : column.second.getRows())
+            {
+                outFile << " " << value;
+            }
+
+            outFile << "\n";
+        }
+
+        outFile << "*\n";
+    }
+    outFile.close();
+    return "Database saved successfully!";
 }
 
 bool Server::Initialize(int port) {
@@ -181,6 +217,12 @@ void Server::handleReq(int clientSocket) {
             send(clientSocket, response.c_str(),response.size(), 0);
        }
 
+         if(com_vector[0]=="save")
+       {    std::string response;
+            response=handleSave(com_vector[1]);
+            //std::string response = "DB saved successfully\n";
+            send(clientSocket, response.c_str(),response.size(), 0);
+       }
     }
 
     return;

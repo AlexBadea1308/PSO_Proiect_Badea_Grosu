@@ -47,4 +47,7 @@ public:
     Database* createDatabase(std::string dbName);
 
     std::string handlePrintTable(const std::string& tableName);
+
+    std::string Server::handleSave(std::string db_name);
+
 };
