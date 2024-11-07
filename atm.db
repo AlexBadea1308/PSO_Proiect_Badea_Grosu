@@ -1,4 +1,9 @@
+*
 std
-age int  21
-nume string  Alex
+age int  21 22
+nume string  Alex Grosu
+*
+fac
+den string calc esem
+durata int 4 3
 *
