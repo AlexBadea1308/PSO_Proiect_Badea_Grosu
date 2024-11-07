@@ -6,9 +6,38 @@ void Server::handleHello(int clientSocket)
     send(clientSocket, helloString.c_str(),helloString.size(), 0);
 }
 
-void Server::handleInsert(int clientSocket, std::string tableName)
+void Server::insertRow(const std::string& tableName, const std::unordered_map<std::string, std::string>& values) {
+    if (!db->tableExists(tableName)) {
+        std::cerr << "Table " << tableName << " does not exist.\n";
+        return;
+    }
+
+    Table& table = db->getTable(tableName);
+
+    for (const auto& [columnName, value] : values) {
+        if (!table.hasColumn(columnName)) {
+            std::cerr << "Column " << columnName << " does not exist in table " << tableName << ".\n";
+            return;
+        }
+    }
+
+    table.insertRow(values);
+    std::cout << "Row inserted successfully into table " << tableName << ".\n";
+}
+
+void Server::handleInsert(std::string tableName, std::vector<std::string> com_vector)
 {
-    //
+        std::unordered_map<std::string, std::string> values;
+
+        for (size_t i = 2; i < com_vector.size(); ++i) {
+            size_t delimPos = com_vector[i].find(':');
+            if (delimPos != std::string::npos) {
+                std::string columnName = com_vector[i].substr(0, delimPos);
+                std::string value = com_vector[i].substr(delimPos + 1);
+                values.insert({columnName,value});
+            }
+        }
+        insertRow(tableName, values);
 }
 
 std::vector<std::string> Server::parseComm(std::string com)
@@ -28,6 +57,13 @@ Database* Server::createDatabase(std::string dbName)
 {   
         Database* new_db = new Database(dbName);
         return new_db;
+}
+
+std::string Server::handlePrintTable(const std::string &tableName)
+{
+    std::string tab = db->getTable(tableName).printTable();
+    //std::cout<<tab<<std::endl;
+    return tab;
 }
 
 bool Server::Initialize(int port) {
@@ -94,7 +130,7 @@ Server::~Server() {
 }
 
 void Server::handleReq(int clientSocket) {
-    char buffer[1024] = { 0 };
+    char buffer[102400] = { 0 };
     
     int bytesReceived = read(clientSocket, buffer, sizeof(buffer));
 
@@ -114,7 +150,7 @@ void Server::handleReq(int clientSocket) {
     else
     {
        std::vector <std::string> com_vector = parseComm(request);
-       //std::cout<<com_vector[0]<<" "<<com_vector[1]<<std::endl;
+
 
        if(com_vector[0]=="create_database")
        {    
@@ -133,10 +169,16 @@ void Server::handleReq(int clientSocket) {
        }
 
         if(com_vector[0]=="insert")
-       {
-            handleInsert();
-            std::cout<<"Row inserted successfully!\n";
+       {    
+            handleInsert(com_vector[1],com_vector);
             std::string response = "Row inserted successfully!\n";
+            send(clientSocket, response.c_str(),response.size(), 0);
+       }
+
+       if(com_vector[0]=="print_table")
+       {    
+            std::string response = handlePrintTable(com_vector[1]);
+            std::cout<<response<<std::endl;
             send(clientSocket, response.c_str(),response.size(), 0);
        }
 

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Column.h"
 #include <string>
+#include <sstream>
 #include <vector>
 #include <iomanip>
 #include <unordered_map>
@@ -18,7 +19,17 @@ class Table{
         Table(const std::string& tableName) : name(tableName) {}
 
         void createColumn(std::string colName,std::string type);
-        void printTable();
+        std::string printTable()const;
+
+        bool insertRow(const std::unordered_map<std::string, std::string>& values);
+
+        const std::string& getName() const {
+            return name;
+        }
+
+    bool hasColumn(const std::string& columnName) const {
+        return columns.find(columnName) != columns.end();
+    }
 };
 
 /* create Database

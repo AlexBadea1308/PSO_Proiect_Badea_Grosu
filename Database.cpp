@@ -36,3 +36,17 @@ void Database::setName(const std::string& dbname)
 {
     name = dbname;
 }
+
+bool Database::tableExists(const std::string &tableName) const
+{
+    return tables.find(tableName) != tables.end();
+}
+
+Table &Database::getTable(const std::string &tableName)
+{
+     auto it = tables.find(tableName);
+            if (it == tables.end()) {
+                throw std::runtime_error("Table " + tableName + " does not exist.");
+            }
+            return it->second;
+}

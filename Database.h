@@ -20,7 +20,13 @@ class Database {
         void create_table(std::string tableName, std::vector <std::string> cols);
         void setName(const std::string& dbname);
         
+        bool tableExists(const std::string& tableName) const;
 
+        Table& getTable(const std::string& tableName);
+
+        void addTable(const Table& table) {
+            tables[table.getName()] = table;
+        }
 };
 
 //database
