@@ -27,8 +27,10 @@ std::string Table::printTable() const {
     oss << '\n';
 
     for (size_t row = 0; row < numRows; ++row) {
-        for (const auto& col : columns) {
+        for (const auto& col : columns) 
+        {
             const auto& colData = col.second.getRows();
+
             if (row < colData.size()) {
                 oss << std::setw(15) << colData[row];
             } else {
@@ -43,7 +45,8 @@ std::string Table::printTable() const {
 
 bool Table::insertRow(const std::unordered_map<std::string, std::string> &values)
 {
-     for (auto& [columnName, column] : columns) {
+     for (auto& [columnName, column] : columns) 
+     {
         auto it = values.find(columnName);
         if (it != values.end()) {
             column.addRow(it->second);
