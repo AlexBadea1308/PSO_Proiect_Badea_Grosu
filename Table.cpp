@@ -59,7 +59,7 @@ bool Table::insertRow(const std::unordered_map<std::string, std::string> &values
 
 void Table::insertRowFromLoad(std::string column_name, std::string value)
 {   
-    for(auto it: columns)
+    for(auto& it: columns)
     {
         if(it.first==column_name)
         {

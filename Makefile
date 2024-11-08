@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -Wall -Wextra -g -std=c++11
+CXXFLAGS = -Wall -Wextra -g -std=c++17
 
 # Source files
 CLIENT_SRC = sandboxClient.cpp ClientConnection.cpp

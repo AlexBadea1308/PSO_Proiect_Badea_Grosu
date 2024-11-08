@@ -116,35 +116,40 @@ std::string Server::handleLoadDB(std::string db_name)
     db=createDatabase(db_name);
     std::string line;
   
-    while(!inFile.eof()) 
-    {    std::getline(inFile, line);
+    while(std::getline(inFile, line)) 
+    {    //std::getline(inFile, line);
          
-        while(line!="*")
+        if(line!="*")
         {    
-            std::cout<<line<<std::endl;
+            //std::cout<<line<<std::endl;
             std::istringstream iss(line);
             std::string name_table, type,name_column;
             iss >>name_table;
 
             std::getline(inFile,line);
-            if(line=="*")
-                continue;
-            std::cout<<line<<std::endl;
-            std::istringstream iss_2(line);
+            while(line!="*")
+            {
+                //std::cout<<line<<std::endl;
+                std::istringstream iss_2(line);
 
-            iss_2>>name_column;
-            iss_2>>type;
+                iss_2>>name_column;
+                iss_2>>type;
             
+            if(!db->tableExists(name_table))
+                db->create_table_from_load(name_table,name_column,type);
+            else
+                db->getTable(name_table).createColumn(name_column,type);
+                
+                std::string value;
 
-            db->create_table_from_load(name_table,name_column,type);
-            std::string value;
-
-            while (iss_2 >> value) 
-            {  
+                while (iss_2 >> value) 
+                {  
                 //std::cout<<value<<std::endl;
                db->getTable(name_table).insertRowFromLoad(name_column,value);
+                }
+                std::getline(inFile, line);
+
             }
-            std::getline(inFile, line);
         }
     }
 
