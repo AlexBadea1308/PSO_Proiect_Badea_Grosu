@@ -54,3 +54,10 @@ Table &Database::getTable(const std::string &tableName)
     
     return it->second;
 }
+
+void Database::create_table_from_load(std::string nume_tabel, std::string column_name, std::string type)
+{
+    Table* new_table = new Table(nume_tabel);
+    new_table->createColumn(column_name,type);
+    tables[nume_tabel] = *new_table;
+}

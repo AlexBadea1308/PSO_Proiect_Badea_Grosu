@@ -34,6 +34,8 @@ class Table{
 
     std::map <std::string, Column> getAllColumns(){return columns;}
 
+    void insertRowFromLoad(std::string column_name,std::string value);
+
     ~Table()
     {
         name="";

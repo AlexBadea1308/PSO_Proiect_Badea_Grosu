@@ -112,42 +112,40 @@ std::string Server::handleLoadDB(std::string db_name)
         return std::string("Error loading database!");
     }
 
-    delete db;
+    //delete db;
     db=createDatabase(db_name);
     std::string line;
-    Table* currentTable = nullptr; 
-    while(std::getline(inFile, line)) 
-    {  
-        if (line == "*\n") 
-        {
-            if(currentTable!=nullptr)
-                delete currentTable;
-        std::getline(inFile,line);
-        std::cout<<line<<"\n";
-        std::istringstream iss(line);
-        if(line!="")
-        {   std::string name, type;
-            iss >> name;
-            currentTable = new Table(name);
-            std::getline(inFile,line);
-            std::cout<<line<<"\n";
+  
+    while(!inFile.eof()) 
+    {    std::getline(inFile, line);
+         
+        while(line!="*")
+        {    
+            std::cout<<line<<std::endl;
             std::istringstream iss(line);
-            iss>>name;
-            iss>>type;
-            currentTable->createColumn(name,type);
+            std::string name_table, type,name_column;
+            iss >>name_table;
+
+            std::getline(inFile,line);
+            if(line=="*")
+                continue;
+            std::cout<<line<<std::endl;
+            std::istringstream iss_2(line);
+
+            iss_2>>name_column;
+            iss_2>>type;
+            
+
+            db->create_table_from_load(name_table,name_column,type);
             std::string value;
-            while (iss >> value) 
+
+            while (iss_2 >> value) 
             {  
-                for(auto it: currentTable->getAllColumns())
-                {
-                    if(it.first==name)
-                    {
-                        it.second.addRow(value);
-                    }
-                }
+                //std::cout<<value<<std::endl;
+               db->getTable(name_table).insertRowFromLoad(name_column,value);
             }
+            std::getline(inFile, line);
         }
-    }
     }
 
     inFile.close();
