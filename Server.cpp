@@ -112,16 +112,16 @@ std::string Server::handleLoadDB(std::string db_name)
         return std::string("Error loading database!");
     }
 
-    //free(db);
+    delete db;
     db=createDatabase(db_name);
     std::string line;
     Table* currentTable = nullptr; 
     while(std::getline(inFile, line)) 
     {  
-        if (line == "*") 
+        if (line == "*\n") 
         {
             if(currentTable!=nullptr)
-                free(currentTable);
+                delete currentTable;
         std::getline(inFile,line);
         std::cout<<line<<"\n";
         std::istringstream iss(line);
