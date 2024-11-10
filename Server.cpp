@@ -6,6 +6,30 @@ void Server::handleHello(int clientSocket)
     send(clientSocket, helloString.c_str(),helloString.size(), 0);
 }
 
+std::string handleLogin(std::string user,std::string pass)
+{
+    std::ifstream file("users.txt");
+    
+    if (!file) {
+        return "Error: Could not open users.txt";
+    }
+
+    std::string line;
+    while (std::getline(file, line)) 
+    {
+        std::istringstream iss(line);
+        std::string username, password;
+        
+        iss >> username >> password;
+        
+        if (username == user && password == pass) {
+            return "Login successful";
+        }
+    }
+
+    return "Invalid username or password";
+}
+
 void Server::insertRow(const std::string& tableName, const std::unordered_map<std::string, std::string>& values) {
     if (!db->tableExists(tableName)) {
         std::cerr << "Table " << tableName << " does not exist.\n";
@@ -275,6 +299,12 @@ void Server::handleReq(int clientSocket) {
        {    std::string response=handleLoadDB(com_vector[1]);
             send(clientSocket, response.c_str(),response.size(), 0);
        }
+
+       if(com_vector[0]=="login")
+        {   
+            std::string response=handleLogin(com_vector[1],com_vector[2]);
+            send(clientSocket, response.c_str(),response.size(), 0);
+        }
     return;
 }
 

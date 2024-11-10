@@ -8,6 +8,34 @@
 
 #define PORT 12345
 
+
+int userLogin(int clientSocket,std::string user,std::string pass)
+{   
+    std::string request;
+
+    request = "login " + user + " " + pass;
+
+    send(clientSocket, request.c_str(), request.size(), 0);
+
+    char buffer[10240] = { 0 };
+    int bytesReceived = read(clientSocket, buffer, sizeof(buffer));
+
+    if (bytesReceived == 0) {
+            std::cerr << "Receive failed\n";
+            close(clientSocket);            
+            return 1;
+            }
+
+    std::string response(buffer);
+
+    if (response == "Login successful")
+        return 1;
+    else
+        return 0;
+
+    return -1;
+}
+
 int main() {
     int sock = 0;
     struct sockaddr_in serv_addr;
@@ -31,6 +59,22 @@ int main() {
     }
     else
         std::cout<<"Connected to server!\n";
+
+    
+    int checkLogin = 0;
+
+    while (checkLogin != 1)
+    {
+        std::string user, pass;
+        std::cout << "\nEnter username:\n";
+        std::getline(std::cin, user);
+        std::cout << "\nEnter password:\n";
+        std::getline(std::cin, pass);
+        checkLogin = userLogin(sock,user,pass);
+
+        if (checkLogin != 1)
+        std::cout << "\nInvalid credentials. Try again";
+    }
 
     while (true) {
         

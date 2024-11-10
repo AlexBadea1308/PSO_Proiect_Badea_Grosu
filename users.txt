@@ -1,0 +1,3 @@
+badea 1234
+grosu parola
+admin admin
