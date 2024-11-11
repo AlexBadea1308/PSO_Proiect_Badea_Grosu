@@ -20,22 +20,22 @@ bool Column::verifyType(std::string value)
 {
     if (type == "INT") 
     {
-        if (validateInt(value)==0)
-            return false;
+        if (validateInt(value)==1)
+            return true;
     } else if (type.rfind("NVARCHAR(", 0) == 0) 
     { 
         size_t start = type.find('(') + 1;
         size_t end = type.find(')');
         int maxLength = std::stoi(type.substr(start, end - start));
         
-        if (validateNvarchar(value, maxLength)==0) 
-            return false;
+        if (validateNvarchar(value, maxLength)) 
+            return true;
         }
          else if (type == "DATE")
-        if (validateDate(value)==0)
-           return false;
+        if (validateDate(value))
+           return true;
 
-        return true;
+        return false;
 }
 
 bool Column::validateNvarchar(const std::string &value, int maxLength)

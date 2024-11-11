@@ -1,7 +1,7 @@
 *
 fac
 den NVARCHAR(30)  calc esem
-durata INT  4 3
+durata int 4 3
 *
 std
 birthday DATE  31-12-2003 13-08-2003 01-02-2000 05-05-2005
