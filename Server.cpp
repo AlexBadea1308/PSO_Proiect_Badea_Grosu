@@ -259,6 +259,7 @@ void Server::handleReq(int clientSocket) {
 
     std::string request(buffer);
     std::vector <std::string> com_vector = parseComm(request);
+    int ok=0;
 
        if(com_vector[0]=="create_database")
        {    
@@ -266,6 +267,7 @@ void Server::handleReq(int clientSocket) {
             std::cout<<"DB created!\n";
             std::string response = "DB " + com_vector[1] + " created successfully!\n";
             send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
        }
 
        if(com_vector[0]=="create_table")
@@ -274,6 +276,7 @@ void Server::handleReq(int clientSocket) {
             std::cout<<"Table created successfully!\n";
             std::string response = "Table created successfully!\n";
             send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
        }
 
         if(com_vector[0]=="insert")
@@ -281,6 +284,7 @@ void Server::handleReq(int clientSocket) {
             handleInsert(com_vector[1],com_vector);
             std::string response = "Row inserted successfully!\n";
             send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
        }
 
        if(com_vector[0]=="print_table")
@@ -288,21 +292,31 @@ void Server::handleReq(int clientSocket) {
             std::string response = handlePrintTable(com_vector[1]);
             std::cout<<response<<std::endl;
             send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
        }
 
          if(com_vector[0]=="save")
        {    std::string response="";
             response=handleSave(com_vector[1]);
             send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
        }
           if(com_vector[0]=="load")
        {    std::string response=handleLoadDB(com_vector[1]);
             send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
        }
 
        if(com_vector[0]=="login")
         {   
             std::string response=handleLogin(com_vector[1],com_vector[2]);
+            send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
+        }
+
+        else if(ok==0)
+        {
+            std::string response = "Wrong input!";
             send(clientSocket, response.c_str(),response.size(), 0);
         }
     return;
