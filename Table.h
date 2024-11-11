@@ -42,11 +42,3 @@ class Table{
         columns.clear();
     }
 };
-
-/* create Database
-
-create_table tablename (colname,type) (colname,type)
-add tablename colname type
-
-
-*/

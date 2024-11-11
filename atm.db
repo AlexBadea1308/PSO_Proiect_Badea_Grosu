@@ -1,9 +1,9 @@
 *
-std
-age int 21 22
-nume string  Alex Grosu
-*
 fac
-den string calc esem
-durata int 4 3
+den NVARCHAR(30)  calc esem
+durata INT  4 3
+*
+std
+birthday DATE  31-12-2003 13-08-2003 01-02-2000 05-05-2005
+nume NVARCHAR(20)  Alex Grosu Cosmin Meclea
 *

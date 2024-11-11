@@ -26,4 +26,8 @@ class Column{
             type="";
             rows.clear();
         }
+        bool verifyType(std::string value);
+        bool validateInt(const std::string& value);
+        bool validateNvarchar(const std::string& value, int maxLength);
+        bool validateDate(const std::string& value);
 };

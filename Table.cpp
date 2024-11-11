@@ -48,10 +48,11 @@ bool Table::insertRow(const std::unordered_map<std::string, std::string> &values
      for (auto& [columnName, column] : columns) 
      {
         auto it = values.find(columnName);
-        if (it != values.end()) {
-            column.addRow(it->second);
-        } else {
-            column.addRow(""); 
+        if (it != values.end())
+        {   
+            if(column.verifyType(it->second)==true)
+                column.addRow(it->second);
+            else return false;
         }
     }
     return true;

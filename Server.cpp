@@ -30,26 +30,32 @@ std::string handleLogin(std::string user,std::string pass)
     return "Invalid username or password";
 }
 
-void Server::insertRow(const std::string& tableName, const std::unordered_map<std::string, std::string>& values) {
-    if (!db->tableExists(tableName)) {
-        std::cerr << "Table " << tableName << " does not exist.\n";
-        return;
+std::string Server::insertRow(const std::string& tableName, const std::unordered_map<std::string, std::string>& values) 
+{
+    std::string response;
+    if (!db->tableExists(tableName)) 
+    {   response="Table "+tableName+" does not exists.\n";
+        return response;
     }
 
     Table& table = db->getTable(tableName);
 
-    for (const auto& [columnName, value] : values) {
-        if (!table.hasColumn(columnName)) {
-            std::cerr << "Column " << columnName << " does not exist in table " << tableName << ".\n";
-            return;
+    for (const auto& [columnName, value] : values) 
+    {
+        if (!table.hasColumn(columnName)) 
+        {
+            response="Column "+columnName+" does not exist in table "+tableName+".\n";
+            return response;
         }
     }
-
-    table.insertRow(values);
-    std::cout << "Row inserted successfully into table " << tableName << ".\n";
+    if(table.insertRow(values)==false)
+        response="Error data type in "+tableName+"!.\n";
+    else
+        response="Row inserted successfully into table "+tableName+".\n";
+    return response;
 }
 
-void Server::handleInsert(std::string tableName, std::vector<std::string> com_vector)
+std::string Server::handleInsert(std::string tableName, std::vector<std::string> com_vector)
 {
         std::unordered_map<std::string, std::string> values;
 
@@ -61,7 +67,7 @@ void Server::handleInsert(std::string tableName, std::vector<std::string> com_ve
                 values.insert({columnName,value});
             }
         }
-        insertRow(tableName, values);
+        return insertRow(tableName, values);
 }
 
 std::vector<std::string> Server::parseComm(std::string com)
@@ -136,16 +142,13 @@ std::string Server::handleLoadDB(std::string db_name)
         return std::string("Error loading database!");
     }
 
-    //delete db;
     db=createDatabase(db_name);
     std::string line;
   
     while(std::getline(inFile, line)) 
-    {    //std::getline(inFile, line);
-         
+    {  
         if(line!="*")
         {    
-            //std::cout<<line<<std::endl;
             std::istringstream iss(line);
             std::string name_table, type,name_column;
             iss >>name_table;
@@ -153,7 +156,6 @@ std::string Server::handleLoadDB(std::string db_name)
             std::getline(inFile,line);
             while(line!="*")
             {
-                //std::cout<<line<<std::endl;
                 std::istringstream iss_2(line);
 
                 iss_2>>name_column;
@@ -168,7 +170,6 @@ std::string Server::handleLoadDB(std::string db_name)
 
                 while (iss_2 >> value) 
                 {  
-                //std::cout<<value<<std::endl;
                db->getTable(name_table).insertRowFromLoad(name_column,value);
                 }
                 std::getline(inFile, line);
@@ -281,8 +282,15 @@ void Server::handleReq(int clientSocket) {
 
         if(com_vector[0]=="insert")
        {    
-            handleInsert(com_vector[1],com_vector);
-            std::string response = "Row inserted successfully!\n";
+            std::string response=handleInsert(com_vector[1],com_vector);
+            if(response.find("Row inserted successfully into table ") != std::string::npos)
+            {
+                handleSave(db->getName());
+            }
+            else
+            {
+                handleLoadDB(db->getName());
+            }
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
        }

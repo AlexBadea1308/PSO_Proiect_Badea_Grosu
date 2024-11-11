@@ -38,9 +38,9 @@ public:
 
     void handleHello(int clientSocket);
 
-    void insertRow(const std::string &tableName, const std::unordered_map<std::string, std::string> &values);
+    std::string insertRow(const std::string &tableName, const std::unordered_map<std::string, std::string> &values);
 
-    void handleInsert(std::string tableName, std::vector <std::string> com_vector);
+    std::string handleInsert(std::string tableName, std::vector <std::string> com_vector);
 
     std::vector <std::string> parseComm(std::string com);
 

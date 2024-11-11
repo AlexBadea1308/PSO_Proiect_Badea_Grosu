@@ -1,9 +1,9 @@
 *
 pacienti
-adresa string  viilor dudu
-nume string  badea grosu
+adresa NVARCHAR(200)  viilor dudu Topoloveni
+nume NVARCHAR(7)  badea grosu Alex
 *
 doctori
-age int  22 40
-nume string  pop anghel
+age INT  22 40 50
+nume NVARCHAR(200)  pop anghel meclea
 *
