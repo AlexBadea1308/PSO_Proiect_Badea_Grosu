@@ -18,11 +18,11 @@ void Column::addRow(const std::string &row)
 
 bool Column::verifyType(std::string value)
 {
-    if (type == "INT") 
+    if ((type == "INT") ||(type=="int")) 
     {
         if (validateInt(value)==1)
             return true;
-    } else if (type.rfind("NVARCHAR(", 0) == 0) 
+    } else if (type.rfind("NVARCHAR(", 0) == 0||type.rfind("nvarchar(", 0) == 0)
     { 
         size_t start = type.find('(') + 1;
         size_t end = type.find(')');
@@ -31,7 +31,7 @@ bool Column::verifyType(std::string value)
         if (validateNvarchar(value, maxLength)) 
             return true;
         }
-         else if (type == "DATE")
+         else if (type == "DATE"||type=="date")
         if (validateDate(value))
            return true;
 

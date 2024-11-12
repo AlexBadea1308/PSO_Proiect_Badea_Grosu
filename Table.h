@@ -36,6 +36,8 @@ class Table{
 
     void insertRowFromLoad(std::string column_name,std::string value);
 
+    std::string updateRow(std::string colSet,std::string valueSet,std::string colCond,std::string op,std::string valueCond);
+
     ~Table()
     {
         name="";

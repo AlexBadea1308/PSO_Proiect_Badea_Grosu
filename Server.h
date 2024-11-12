@@ -51,5 +51,7 @@ public:
     std::string handleSave(std::string db_name);
 
     std::string handleLoadDB(std::string db_name);
+    
+    std::string handleUpdate(std::string tableName, std::vector<std::string> com_vector);
 
 };

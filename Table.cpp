@@ -44,18 +44,33 @@ std::string Table::printTable() const {
 }
 
 bool Table::insertRow(const std::unordered_map<std::string, std::string> &values)
-{
+{   
+    int ok=1;
      for (auto& [columnName, column] : columns) 
      {
         auto it = values.find(columnName);
         if (it != values.end())
         {   
-            if(column.verifyType(it->second)==true)
-                column.addRow(it->second);
-            else return false;
+            if(column.verifyType(it->second)==false)
+             {ok=0;
+             break;
+             }
+        }
+    }
+
+    if(ok==1)
+    {
+        for (auto& [columnName, column] : columns) 
+     {
+        auto it = values.find(columnName);
+        if (it != values.end())
+        {   
+           column.addRow(it->second);
         }
     }
     return true;
+    }
+    return false;
 }
 
 void Table::insertRowFromLoad(std::string column_name, std::string value)
@@ -66,5 +81,14 @@ void Table::insertRowFromLoad(std::string column_name, std::string value)
         {
             it.second.addRow(value);
         }
+    }
+}
+
+std::string Table::updateRow(std::string colSet, std::string valueSet, std::string colCond, std::string op, std::string valueCond)
+{
+    int index=0;
+
+    for(auto &it : columns[colCond].getRows())
+    {   
     }
 }
