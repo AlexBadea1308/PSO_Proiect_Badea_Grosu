@@ -1,9 +1,10 @@
 *
 std
-birthday DATE  31-12-2003 13-08-2003 01-02-2000 05-05-2005 12-12-2012
-nume NVARCHAR(20)  Alex Grosu Cosmin Meclea pila
+nume NVARCHAR(200) Alex Grosu
+age int 20 21
+birthday date 13-08-2003 19-07-2003
 *
 fac
-den NVARCHAR(30)  calc esem esem bat
-durata int  4 3 4 4
+den nvarchar(50) calc calc
+durata int 4 4
 *

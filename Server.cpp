@@ -86,7 +86,7 @@ std::vector<std::string> Server::parseComm(std::string com)
 }
 
 Database* Server::createDatabase(std::string dbName)
-{   
+{       
         Database* new_db = new Database(dbName);
         return new_db;
 }
@@ -295,11 +295,21 @@ void Server::handleReq(int clientSocket) {
 
        if(com_vector[0]=="create_database")
        {    
+            std::string response;
+            std::string filename = com_vector[1] + ".db";
+            std::ifstream inFile(filename);
+            if (inFile)
+          {   
+              response="Database already exists!";
+          }
+          else
+          {
             db = createDatabase(com_vector[1]);
             std::cout<<"DB created!\n";
-            std::string response = "DB " + com_vector[1] + " created successfully!\n";
-            send(clientSocket, response.c_str(),response.size(), 0);
-            ok=1;
+            response = "DB " + com_vector[1] + " created successfully!\n";
+          }
+          send(clientSocket, response.c_str(),response.size(), 0);
+        ok=1;
        }
 
        if(com_vector[0]=="create_table")
