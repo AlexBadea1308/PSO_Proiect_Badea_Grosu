@@ -6,7 +6,7 @@ std::string Column::getName()
 }
 
 
-const std::vector<std::string> Column::getRows() const
+std::vector<std::string> Column::getRows()
 {
     return rows;
 }

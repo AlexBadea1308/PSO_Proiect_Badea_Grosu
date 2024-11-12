@@ -90,5 +90,35 @@ std::string Table::updateRow(std::string colSet, std::string valueSet, std::stri
 
     for(auto &it : columns[colCond].getRows())
     {   
+        char opChar = op[0];
+            switch (opChar) 
+        {
+        case '=':
+            if (op == "=") 
+            {
+                if(it==valueCond)
+                 columns[colSet].getRows()[index]=valueSet;
+            }
+                 break;
+        case '>':
+            if (op == ">") 
+                if(it>valueCond)
+                 columns[colSet].getRows()[index]=valueSet;
+            break;
+        case '<':
+            if (op == "<")
+            {
+                if(it<valueCond)
+                 columns[colSet].getRows()[index]=valueSet;
+            }
+            break;
+        case '!':
+            if (op == "!=") 
+             if(it!=valueCond)
+                 columns[colSet].getRows()[index]=valueSet;
+            break;
+        default:
+            std::cout << "Operator necunoscut.\n";
+    index++;
     }
 }
