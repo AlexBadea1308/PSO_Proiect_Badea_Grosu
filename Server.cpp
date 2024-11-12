@@ -118,12 +118,12 @@ std::string Server::handleSave(std::string db_name)
         outFile <<"*\n"
         <<table.first<< "\n";
         Table t=table.second;
-        for (const auto& column : t.getAllColumns())
+        for (auto& column : t.getAllColumns())
         {   
             Column c=column.second;
             outFile << column.first<<" "<<c.getType()<<" ";
 
-            for (const auto& value : column.second.getRows())
+            for (auto& value : column.second.getRows())
             {
                 outFile << " " << value;
             }
@@ -212,7 +212,7 @@ std::string Server::handleUpdate(std::string tableName, std::vector<std::string>
         return response;
     }
     
-    table.updateRow(colSet,valueSet,colCond,op,valueCond);
+    return table.updateRow(colSet,valueSet,colCond,op,valueCond);
 }
 
 bool Server::Initialize(int port) {

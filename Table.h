@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <unordered_map>
 #include <map>
+#include<cstdlib>
 
 class Table{
 
@@ -19,7 +20,7 @@ class Table{
         Table(const std::string& tableName) : name(tableName) {}
 
         void createColumn(std::string colName,std::string type);
-        std::string printTable()const;
+        std::string printTable();
 
         bool insertRow(const std::unordered_map<std::string, std::string>& values);
 
@@ -37,6 +38,9 @@ class Table{
     void insertRowFromLoad(std::string column_name,std::string value);
 
     std::string updateRow(std::string colSet,std::string valueSet,std::string colCond,std::string op,std::string valueCond);
+    bool evaluateIntCondition( std::string& colCond,  std::string& op,  std::string& colComp);
+    bool evaluateNvarcharCondition( std::string& colCond,  std::string& op,  std::string& colComp);
+    bool evaluateDateCondition( std::string& colCond,  std::string& op,  std::string& colComp);
 
     ~Table()
     {

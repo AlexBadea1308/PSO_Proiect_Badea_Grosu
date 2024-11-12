@@ -11,6 +11,11 @@ std::vector<std::string> Column::getRows()
     return rows;
 }
 
+void Column::setRow(int index,std::string rowValue)
+{
+    rows[index]=rowValue;
+}
+
 void Column::addRow(const std::string &row)
 {
     rows.push_back(row);

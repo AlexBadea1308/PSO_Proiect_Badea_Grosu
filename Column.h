@@ -18,6 +18,7 @@ class Column{
 
         std::string getName();
         std::vector<std::string> getRows();
+        void setRow(int index,std::string rowValue);
         void addRow(const std::string& row);
         std::string getType(){return type;}
         ~Column()
