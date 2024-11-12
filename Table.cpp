@@ -176,6 +176,66 @@ bool Table::evaluateDateCondition( std::string &colCond,  std::string &op,  std:
         return false;
 }
 
+std::string Table::deleteRow(std::string colCond,std::string op,std::string valueCond)
+{
+    int index=0,ok_cond=0,count=0;
+
+    //ok_cond verificam daca tipul de date de la conditie este acelasi cu cel din coloana conditie
+
+    if((columns[colCond].getType()=="INT"||columns[colCond].getType()=="int")&&columns[colCond].validateInt(valueCond))
+    {
+        ok_cond=1;
+    }
+    else if(columns[colCond].getType().rfind("NVARCHAR(",0)==0||columns[colCond].getType().rfind("nvarchar(",0)==0)
+    {
+        size_t start = columns[colCond].getType().find('(') + 1;
+        size_t end = columns[colCond].getType().find(')');
+        int maxLength = std::stoi(columns[colCond].getType().substr(start, end - start));
+        if (columns[colCond].validateNvarchar(valueCond,maxLength))
+        {
+            ok_cond=2;
+        }
+    }
+    else if(columns[colCond].getType()=="DATE"||(columns[colCond].getType()=="date")&&columns[colCond].validateDate(valueCond))
+    {
+        ok_cond=3;
+    }
+
+    for(auto &it : columns[colCond].getRows())
+    {   switch (ok_cond) {
+    case 1: 
+        if (evaluateIntCondition(valueCond,op,it)){
+            columns[colCond].setRow(index,"NULL");
+            count++;
+        }
+        break;
+    case 2: 
+        if (evaluateNvarcharCondition(valueCond, op, it)) {
+            columns[colCond].setRow(index,"NULL");
+            count++;
+        }
+        break;
+
+    case 3:
+        if (evaluateDateCondition(valueCond,op,it))
+        {
+            columns[colCond].setRow(index,"NULL");
+            count++;
+        }
+        break;
+    default:
+        return std::string("INVALID TYPE OF DATE OR TYPE OF VALUE");
+        break;
+    }
+    index++;
+    } 
+    std::string response="Delete succes! ";
+    std::stringstream ss;
+    ss <<count;
+    response+=ss.str()+" rows affected!";
+    return response;
+}
+
 std::string Table::updateRow(std::string colSet, std::string valueSet, std::string colCond, std::string op, std::string valueCond)
 {
     int index=0,ok_cond=0,ok_set=0,count=0;
@@ -252,7 +312,7 @@ std::string Table::updateRow(std::string colSet, std::string valueSet, std::stri
     }
     index++;
     } 
-    std::string response="Succes! ";
+    std::string response="Update succes! ";
     std::stringstream ss;
     ss <<count;
     response+=ss.str()+" rows affected!";

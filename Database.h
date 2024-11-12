@@ -33,6 +33,8 @@ class Database {
         std::unordered_map<std::string,Table> getAllTables(){return tables;}
 
         void create_table_from_load(std::string nume_tabel,std::string column_name,std::string type);
+
+        bool hasTable(std::string tableName);
         
         ~Database()
         {

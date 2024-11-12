@@ -92,8 +92,12 @@ Database* Server::createDatabase(std::string dbName)
 }
 
 std::string Server::handlePrintTable(const std::string &tableName)
-{
-    std::string tab = db->getTable(tableName).printTable();
+{   std::string tab;
+    if(db->hasTable(tableName)==1)
+    {   tab=db->getTable(tableName).printTable();
+        return tab;
+    }
+    tab="Table "+tableName+" does not exists!\n";
     return tab;
 }
 
@@ -215,6 +219,30 @@ std::string Server::handleUpdate(std::string tableName, std::vector<std::string>
     return table.updateRow(colSet,valueSet,colCond,op,valueCond);
 }
 
+
+std::string Server::handleDelete(std::string tableName, std::vector<std::string> com_vector)
+{
+    std::string response;
+    if (!db->tableExists(tableName)) 
+    {   response="Table "+tableName+" does not exists.\n";
+        return response;
+    }
+
+    Table& table = db->getTable(tableName);
+    
+    std::string colCond=com_vector[4];
+    std::string op=com_vector[5];
+    std::string valueCond=com_vector[6];
+
+    if (!table.hasColumn(colCond)) 
+    {
+        response="Column "+com_vector[4]+" does not exist in table "+tableName+".\n";
+        return response;
+    }
+
+    return table.deleteRow(colCond,op,valueCond);
+}
+
 bool Server::Initialize(int port) {
 
     int addrlen = sizeof(address);
@@ -312,7 +340,7 @@ void Server::handleReq(int clientSocket) {
         ok=1;
        }
 
-       if(com_vector[0]=="create_table")
+       if(com_vector[0]=="create_table"&& com_vector[1].find("[")!=0)
        {    
             db->create_table(com_vector[1],com_vector);
             std::cout<<"Table created successfully!\n";
@@ -321,7 +349,7 @@ void Server::handleReq(int clientSocket) {
             ok=1;
        }
 
-        if(com_vector[0]=="insert")
+        if(com_vector[0]=="insert"&& db->hasTable(com_vector[1]))
        {    
             std::string response=handleInsert(com_vector[1],com_vector);
             // if(response.find("Row inserted successfully into table ") != std::string::npos)
@@ -362,6 +390,13 @@ void Server::handleReq(int clientSocket) {
          if(com_vector[0]=="update"&& com_vector[2]=="set"&& com_vector[6]=="where")
         {   
             std::string response=handleUpdate(com_vector[1],com_vector);
+            send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
+        }
+
+         if(com_vector[0]=="delete" && com_vector[1]=="from"&& com_vector[3]=="where")
+        {   
+            std::string response=handleDelete(com_vector[2],com_vector);
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
         }

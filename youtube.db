@@ -1,0 +1,6 @@
+*
+users
+abonati int  5000
+data_lansarii date  12-12-2012
+nume NVARCHAR(200)  SELLY
+*

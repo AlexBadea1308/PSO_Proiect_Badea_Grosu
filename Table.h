@@ -42,6 +42,8 @@ class Table{
     bool evaluateNvarcharCondition( std::string& colCond,  std::string& op,  std::string& colComp);
     bool evaluateDateCondition( std::string& colCond,  std::string& op,  std::string& colComp);
 
+    std::string deleteRow(std::string colCond,std::string op,std::string valueCond);
+
     ~Table()
     {
         name="";

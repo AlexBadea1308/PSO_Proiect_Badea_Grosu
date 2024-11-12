@@ -2,14 +2,14 @@
 #include<sys/types.h>
 
 void Database::create_table(std::string tableName, std::vector<std::string> cols)
-{
+{  
     Table* new_table = new Table(tableName);
 
     for(auto& i : cols)
     {
-        size_t start = i.find('(');
+        size_t start = i.find('[');
         size_t comma = i.find(','); 
-        size_t end = i.find(')');   
+        size_t end = i.find(']');   
 
         std::string colname,type;
 
@@ -60,4 +60,9 @@ void Database::create_table_from_load(std::string nume_tabel, std::string column
     Table* new_table = new Table(nume_tabel);
     new_table->createColumn(column_name,type);
     tables[nume_tabel] = *new_table;
+}
+
+bool Database::hasTable(std::string tableName)
+{
+    return tables.find(tableName) != tables.end();
 }

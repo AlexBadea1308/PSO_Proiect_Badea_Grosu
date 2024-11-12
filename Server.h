@@ -54,4 +54,6 @@ public:
     
     std::string handleUpdate(std::string tableName, std::vector<std::string> com_vector);
 
+    std::string handleDelete(std::string tableName, std::vector<std::string> com_vector);
+
 };
