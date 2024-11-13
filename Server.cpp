@@ -334,8 +334,30 @@ ClientConnection Server::AcceptConnections() {
 
 Server::~Server() {
     close(serverSocket);
+    //free(db);
+}
+
+std::string getUser(int clientSocket)
+{
+    std::string req = "ASKUSER";
+    send(clientSocket, req.c_str(),req.size(), 0);
+
+    char buffer[1024] = { 0 };
+    
+    int bytesReceived = read(clientSocket, buffer, sizeof(buffer));
+
+    if (bytesReceived == 0) {
+        std::cout << "Client disconnected\n";
+        close(clientSocket);
+        return nullptr;
+    }
+
+    std::string response(buffer);
+
+    return response;
 
 }
+
 
 void Server::handleReq(int clientSocket) {
     char buffer[1024] = { 0 };
@@ -403,18 +425,22 @@ void Server::handleReq(int clientSocket) {
        }
           if(com_vector[0]=="load")
        {    std::string response;
+            std::string username = getUser(clientSocket);
+
             if(checkPermission(com_vector[1],username)==1)
+            {
                response=handleLoadDB(com_vector[1]);
-            else
+            }
+            else{
                 response="You don't have the permissions to access "+com_vector[1]+" !Please try another database!\n";
+            }
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
        }
 
        if(com_vector[0]=="login")
         {   
-            username=com_vector[1];
-            std::string response=handleLogin(com_vector[1],com_vector[2]);
+            std::string response = handleLogin(com_vector[1],com_vector[2]);
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
         }

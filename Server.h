@@ -21,7 +21,6 @@ private:
     struct sockaddr_in address;
     std::string last_event;
     Database* db;
-    std::string username;
 
 public:
 

@@ -39,6 +39,7 @@ int userLogin(int clientSocket,std::string user,std::string pass)
 int main() {
     int sock = 0;
     struct sockaddr_in serv_addr;
+    std::string user;
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         std::cerr << "Socket creation error" << std::endl;
@@ -65,7 +66,7 @@ int main() {
 
     while (checkLogin != 1)
     {
-        std::string user, pass;
+        std::string pass;
         std::cout << "\nEnter username:\n";
         std::getline(std::cin, user);
         std::cout << "\nEnter password:\n";
@@ -97,7 +98,25 @@ int main() {
             return 1;
             }
             
-            std::cout<<buffer;
+            std::string response(buffer);
+
+            if(response=="ASKUSER")
+            {
+                send(sock,user.c_str(),user.size(),0);
+                char aux_buff[1024] = {0};
+                int numBytes = read(sock, aux_buff, sizeof(aux_buff));
+
+                if (numBytes == 0) 
+                {
+                    std::cerr << "Receive failed\n";
+                    close(sock);            
+                    return 1;
+                }
+                std::cout<<aux_buff<<std::endl;
+            }
+            else{
+                std::cout<<buffer;
+            }
             continue;
     }  
     return 0;
