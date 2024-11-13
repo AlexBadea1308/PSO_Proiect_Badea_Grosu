@@ -83,7 +83,7 @@ int main() {
         std::getline(std::cin, req);
 
         if (req == "exit")
-        {
+        {   
             close(sock);
             return 1;
         }

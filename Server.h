@@ -57,6 +57,8 @@ public:
 
     std::string handleDelete(std::string tableName, std::vector<std::string> com_vector);
 
+    std::string handleLogin(std::string user,std::string pass);
+
     bool checkPermission(std::string dbName, std::string user);
 
 };

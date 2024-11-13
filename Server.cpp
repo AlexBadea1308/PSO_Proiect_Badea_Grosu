@@ -1,13 +1,12 @@
 #include "Server.h"
 
-
 void Server::handleHello(int clientSocket)
 {   
     std::string helloString = "Hello Client!\n";
     send(clientSocket, helloString.c_str(),helloString.size(), 0);
 }
 
-std::string handleLogin(std::string user,std::string pass)
+std::string Server::handleLogin(std::string user,std::string pass)
 {
     std::ifstream file("users.txt");
     
@@ -19,16 +18,47 @@ std::string handleLogin(std::string user,std::string pass)
     while (std::getline(file, line)) 
     {
         std::istringstream iss(line);
-        std::string username, password;
+        std::string user_name, password;
         
-        iss >> username >> password;
+        iss >> user_name >> password;
         
-        if (username == user && password == pass) {
+        if (user_name == user && password == pass) {
             return "Login successful";
         }
     }
 
     return "Invalid username or password";
+}
+
+bool Server::checkPermission(std::string dbName, std::string user)
+{
+    std::ifstream permsFile("perm.txt"); 
+    if (!permsFile.is_open()) {
+        return false;
+    }
+
+    std::string line;
+    while (std::getline(permsFile, line)) 
+    {
+        std::istringstream iss(line);
+        std::string db, userName;
+
+        iss >> db;
+
+        if (db == dbName) 
+        {  
+            while (iss >> userName) 
+            {
+                if (userName == user) 
+                {
+                    permsFile.close();
+                    return true; 
+                }
+            }
+        }
+    }
+    permsFile.close();
+    return false;
 }
 
 std::string Server::insertRow(const std::string& tableName, const std::unordered_map<std::string, std::string>& values) 
@@ -50,9 +80,9 @@ std::string Server::insertRow(const std::string& tableName, const std::unordered
         }
     }
     if(table.insertRow(values)==false)
-        response="Error data type in "+tableName+" or invalid syntax!\n";
+        response="Error data type in "+tableName+"!.\n";
     else
-        response="Row inserted successfully into table "+tableName+"\n";
+        response="Row inserted successfully into table "+tableName+".\n";
     return response;
 }
 
@@ -244,38 +274,6 @@ std::string Server::handleDelete(std::string tableName, std::vector<std::string>
     return table.deleteRow(colCond,op,valueCond);
 }
 
-bool Server::checkPermission(std::string dbName, std::string user)
-{
-    std::ifstream file("perm.txt");
-    if (!file.is_open()) {
-        std::cerr << "Error: Unable to open perm.txt file." << std::endl;
-        return false;
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        std::istringstream iss(line);
-        std::string db;
-        iss >> db;
-
-        // Check if the first word (database name) matches the input dbName
-        if (db == dbName) {
-            std::string allowedUser;
-            // Check each subsequent word (user) to see if it matches the input user
-            while (iss >> allowedUser) {
-                if (allowedUser == user) {
-                    return true;
-                }
-            }
-            // If the dbName matches but the user is not found, return false
-            return false;
-        }
-    }
-
-    // If the dbName is not found in the file, return false
-    return false;
-}
-
 bool Server::Initialize(int port) {
 
     int addrlen = sizeof(address);
@@ -385,10 +383,6 @@ void Server::handleReq(int clientSocket) {
         if(com_vector[0]=="insert"&& db->hasTable(com_vector[1]))
        {    
             std::string response=handleInsert(com_vector[1],com_vector);
-            // if(response.find("Row inserted successfully into table ") != std::string::npos)
-            // {
-            //     handleSave(db->getName());
-            // }
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
        }
@@ -408,26 +402,19 @@ void Server::handleReq(int clientSocket) {
             ok=1;
        }
           if(com_vector[0]=="load")
-       {    
-            std::string response;
-
+       {    std::string response;
             if(checkPermission(com_vector[1],username)==1)
-            {
-                response=handleLoadDB(com_vector[1]);
-            }
+               response=handleLoadDB(com_vector[1]);
             else
-            {
-                response = "Not allowed to open " +com_vector[1]+ "! Go away!\n";
-            }
+                response="You don't have the permissions to access "+com_vector[1]+" !Please try another database!\n";
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
        }
 
        if(com_vector[0]=="login")
         {   
-            //username = com_vector[1];
+            username=com_vector[1];
             std::string response=handleLogin(com_vector[1],com_vector[2]);
-
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
         }
