@@ -21,6 +21,11 @@ void Column::addRow(const std::string &row)
     rows.push_back(row);
 }
 
+void Column::deleteRow(int index)
+{   
+    rows.erase(rows.begin() + index);
+}
+
 bool Column::verifyType(std::string value)
 {
     if ((type == "INT") ||(type=="int")) 
@@ -44,7 +49,7 @@ bool Column::verifyType(std::string value)
 }
 
 bool Column::validateNvarchar(const std::string &value, int maxLength)
-{
+{    
     return value.size() <= maxLength;
 }
 bool Column::validateDate(const std::string &value)
@@ -63,7 +68,8 @@ bool Column::validateDate(const std::string &value)
     return true;
 }
 bool Column::validateInt(const std::string &value)
-{
+{   
+
     for (char ch : value)
         if (!std::isdigit(ch)) 
         {

@@ -52,7 +52,7 @@ bool Table::insertRow(const std::unordered_map<std::string, std::string> &values
         auto it = values.find(columnName);
         if (it != values.end())
         {   
-            if(column.verifyType(it->second)==false)
+            if( it->second == "" || column.verifyType(it->second)==false)
              {ok=0;
              break;
              }
@@ -67,6 +67,10 @@ bool Table::insertRow(const std::unordered_map<std::string, std::string> &values
         if (it != values.end())
         {   
            column.addRow(it->second);
+        }
+        else //if(it->first != "" && it->second != "")
+        {
+            column.addRow("NULL");
         }
     }
     return true;
@@ -205,21 +209,30 @@ std::string Table::deleteRow(std::string colCond,std::string op,std::string valu
     {   switch (ok_cond) {
     case 1: 
         if (evaluateIntCondition(valueCond,op,it)){
-            columns[colCond].setRow(index,"NULL");
+            for(auto &col: columns)
+            {
+                col.second.deleteRow(index);
+            }
             count++;
         }
         break;
     case 2: 
         if (evaluateNvarcharCondition(valueCond, op, it)) {
-            columns[colCond].setRow(index,"NULL");
+            for(auto &col: columns)
+            {
+                col.second.deleteRow(index);
+            }
             count++;
         }
         break;
 
     case 3:
         if (evaluateDateCondition(valueCond,op,it))
-        {
-            columns[colCond].setRow(index,"NULL");
+        {   
+            for(auto &col: columns)
+            {
+                col.second.deleteRow(index);
+            }
             count++;
         }
         break;

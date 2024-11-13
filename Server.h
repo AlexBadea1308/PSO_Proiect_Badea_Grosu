@@ -21,6 +21,7 @@ private:
     struct sockaddr_in address;
     std::string last_event;
     Database* db;
+    std::string username;
 
 public:
 
@@ -55,5 +56,7 @@ public:
     std::string handleUpdate(std::string tableName, std::vector<std::string> com_vector);
 
     std::string handleDelete(std::string tableName, std::vector<std::string> com_vector);
+
+    bool checkPermission(std::string dbName, std::string user);
 
 };
