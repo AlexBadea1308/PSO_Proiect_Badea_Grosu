@@ -432,7 +432,7 @@ void Server::handleReq(int clientSocket) {
                response=handleLoadDB(com_vector[1]);
             }
             else{
-                response="You don't have the permissions to access "+com_vector[1]+" !Please try another database!\n";
+                response="Permission to access "+com_vector[1]+" not granted. Try again!\n";
             }
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
