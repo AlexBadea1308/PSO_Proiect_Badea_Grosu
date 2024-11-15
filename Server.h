@@ -61,6 +61,8 @@ public:
 
     std::string handleAllow(std::vector<std::string> userstoAllow);
 
+    std::string handleDeny(std::vector<std::string> userstoDeny);
+
     bool checkPermission(std::string dbName, std::string user);
 
 };

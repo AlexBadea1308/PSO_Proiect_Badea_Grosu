@@ -6,6 +6,19 @@ void Server::handleHello(int clientSocket)
     send(clientSocket, helloString.c_str(),helloString.size(), 0);
 }
 
+std::string readFileToString(const std::string& filePath) {
+    std::ifstream file(filePath);
+
+    if (!file.is_open()) {
+        throw std::runtime_error("Error: Could not open file " + filePath);
+    }
+
+    // Read the entire file into a string
+    std::string fileContents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    file.close();
+    return fileContents;
+}
+
 std::string Server::handleLogin(std::string user,std::string pass)
 {
     std::ifstream file("users.txt");
@@ -100,6 +113,67 @@ std::string Server::handleAllow(std::vector<std::string> userstoAllow)
 
     outFile.close();
     return "Permissions updated successfully.";
+}
+
+std::string Server::handleDeny(std::vector<std::string> userstoDeny)
+{   
+    if (userstoDeny.size() < 3) {
+        return "Error: Insufficient arguments. Expected format: deny <db_name> <user1> <user2> ...";
+    }
+
+    std::string dbName = userstoDeny[1];
+    std::unordered_set<std::string> usersToDeny(userstoDeny.begin() + 2, userstoDeny.end());
+
+    std::ifstream inputFile("perm.txt");
+    if (!inputFile.is_open()) {
+        return "Error: Could not open perm.txt";
+    }
+
+    std::vector<std::string> lines;
+    std::string line;
+    bool dbFound = false;
+
+    while (std::getline(inputFile, line)) {
+        std::istringstream iss(line);
+        std::string currentDbName;
+        iss >> currentDbName;
+
+        if (currentDbName == dbName) {
+            dbFound = true;
+
+            std::ostringstream updatedLine;
+            updatedLine << dbName;
+            std::string user;
+
+            while (iss >> user) {
+                if (usersToDeny.find(user) == usersToDeny.end()) {
+                    updatedLine << " " << user;
+                }
+            }
+
+            lines.push_back(updatedLine.str());
+        } else {
+            lines.push_back(line);
+        }
+    }
+
+    inputFile.close();
+
+    if (!dbFound) {
+        return "Error: Database not found in perm.txt";
+    }
+
+    std::ofstream outputFile("perm.txt");
+    if (!outputFile.is_open()) {
+        return "Error: Could not write to perm.txt";
+    }
+
+    for (const auto& updatedLine : lines) {
+        outputFile << updatedLine << "\n";
+    }
+
+    outputFile.close();
+    return "Users denied access successfully";
 }
 
 bool Server::checkPermission(std::string dbName, std::string user)
@@ -275,13 +349,14 @@ std::string Server::handleLoadDB(std::string db_name)
             else
                 db->getTable(name_table).createColumn(name_column,type);
                 
-                std::string value;
+            std::string value;
 
-                while (iss_2 >> value) 
-                {  
+            while (iss_2 >> value) 
+            {  
                db->getTable(name_table).insertRowFromLoad(name_column,value);
-                }
-                std::getline(inFile, line);
+            }
+            
+            std::getline(inFile, line);
 
             }
         }
@@ -349,7 +424,7 @@ std::string Server::handleDelete(std::string tableName, std::vector<std::string>
 bool Server::Initialize(int port) {
 
     int addrlen = sizeof(address);
-    char buffer[1024] = {0};
+    //char buffer[1024] = {0};
 
     if ((serverSocket = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         std::cerr << "Socket failed" << std::endl;
@@ -544,8 +619,32 @@ void Server::handleReq(int clientSocket) {
             }
             else
             {
-                response = "Permission not granted to allow users!\n";
+                response = "Permission not granted to allow users. Try to load DB first.\n";
             }
+            send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
+        }
+
+        if(com_vector[0] == "deny")
+        {   
+            std::string response;
+
+            if(hasPermission == 1)
+            {
+                response = handleDeny(com_vector);
+            }
+            else
+            {
+                response = "Permission not granted to deny users. Try to load DB first.\n";
+            }
+            send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
+        }
+
+        if(com_vector[0] == "?")
+        {
+            std::string response = readFileToString("help.txt");
+
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
         }
@@ -557,7 +656,6 @@ void Server::handleReq(int clientSocket) {
         }
     return;
 }
-
 
 bool isSocketOpen(int socket) {
     char buffer;

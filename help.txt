@@ -1,0 +1,22 @@
+create_database dbName
+
+create_table tableName [columnName,type] [columnName,type] ...
+
+insert tableName columnName:value columnName:value ...
+
+print_table tableName
+
+save dbName
+
+load dbName
+
+update tableName set columnName = newValue where condition
+example update students set grade = 5 where grade < 5
+
+delete from tableName where condition
+
+allow dbName user1 user2 ...
+
+deny dbName user1 user2 ...
+
+
