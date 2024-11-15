@@ -506,6 +506,7 @@ std::string getUser(int clientSocket)
 }
 
 int hasPermission=0;
+std::string allowedDb = "";
 
 void Server::handleReq(int clientSocket) {
     char buffer[1024] = { 0 };
@@ -578,11 +579,11 @@ void Server::handleReq(int clientSocket) {
             if(checkPermission(com_vector[1],username)==1)
             {
                response = handleLoadDB(com_vector[1]);
-               hasPermission = 1;
+               allowedDb = com_vector[1];
             }
             else{
                 response="Permission to access "+com_vector[1]+" not granted. Try again!\n";
-                hasPermission = 0;
+                //hasPermission = 0;
             }
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
@@ -613,7 +614,7 @@ void Server::handleReq(int clientSocket) {
         {   
             std::string response;
 
-            if(hasPermission == 1)
+            if(allowedDb == com_vector[1])
             {
                 response = handleAllow(com_vector);
             }
@@ -629,7 +630,7 @@ void Server::handleReq(int clientSocket) {
         {   
             std::string response;
 
-            if(hasPermission == 1)
+            if(allowedDb == com_vector[1])
             {
                 response = handleDeny(com_vector);
             }
