@@ -6,6 +6,7 @@
 #include <fstream>
 #include<functional>
 #include <iostream>
+#include <unordered_set>
 #include <mutex>
 #include <queue>
 #include <string>
@@ -57,6 +58,8 @@ public:
     std::string handleDelete(std::string tableName, std::vector<std::string> com_vector);
 
     std::string handleLogin(std::string user,std::string pass);
+
+    std::string handleAllow(std::vector<std::string> userstoAllow);
 
     bool checkPermission(std::string dbName, std::string user);
 

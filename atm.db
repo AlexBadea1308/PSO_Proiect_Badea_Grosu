@@ -1,10 +1,10 @@
 *
+std
+age int  20 21 21
+birthday date  13-08-2003 19-07-2003 21-02-2004
+nume NVARCHAR(200)  Alex Grosu Gruita
+*
 fac
 den nvarchar(50)  calc calc
 durata int  4 4
-*
-std
-age int  20 21 21
-birthday date  13-08-2003 12-12-2012 19-07-2003
-nume NVARCHAR(200)  Alex Meclea Grosu
 *

@@ -30,6 +30,78 @@ std::string Server::handleLogin(std::string user,std::string pass)
     return "Invalid username or password";
 }
 
+std::string Server::handleAllow(std::vector<std::string> userstoAllow)
+{
+    if (userstoAllow.size() < 3) { // Ensure we have "allow", dbName, and at least one user
+        return "Error: Invalid command format. Usage: allow <dbname> <user1> <user2> ...";
+    }
+
+    // Extract the database name and users to allow
+    std::string dbName = userstoAllow[1];
+    std::unordered_set<std::string> newUsers(userstoAllow.begin() + 2, userstoAllow.end()); // Skip "allow" and dbName
+
+    // Read the existing permissions from perm.txt
+    std::ifstream permsFile("perm.txt");
+    if (!permsFile.is_open()) {
+        return "Error: Could not open perm.txt file.";
+    }
+
+    std::string line;
+    bool dbFound = false;
+    std::vector<std::string> fileContents;
+    
+    while (std::getline(permsFile, line)) {
+        std::istringstream iss(line);
+        std::string db;
+        iss >> db;
+
+        if (db == dbName) {
+            dbFound = true;
+
+            // Store the current users in a set to avoid duplicates
+            std::unordered_set<std::string> existingUsers;
+            std::string user;
+            while (iss >> user) {
+                existingUsers.insert(user);
+            }
+
+            // Add new users to the set
+            for (const auto& newUser : newUsers) {
+                existingUsers.insert(newUser);
+            }
+
+            // Reconstruct the line with updated users
+            std::ostringstream updatedLine;
+            updatedLine << dbName;
+            for (const auto& user : existingUsers) {
+                updatedLine << " " << user;
+            }
+            fileContents.push_back(updatedLine.str());
+        } else {
+            // Keep lines of other databases unchanged
+            fileContents.push_back(line);
+        }
+    }
+
+    permsFile.close();
+
+    if (!dbFound) {
+        return "Database not found.\n";
+    }
+
+    std::ofstream outFile("perm.txt");
+    if (!outFile.is_open()) {
+        return "Error: Could not open perm.txt for writing.";
+    }
+
+    for (const auto& updatedLine : fileContents) {
+        outFile << updatedLine << "\n";
+    }
+
+    outFile.close();
+    return "Permissions updated successfully.";
+}
+
 bool Server::checkPermission(std::string dbName, std::string user)
 {
     std::ifstream permsFile("perm.txt"); 
@@ -358,6 +430,7 @@ std::string getUser(int clientSocket)
 
 }
 
+int hasPermission=0;
 
 void Server::handleReq(int clientSocket) {
     char buffer[1024] = { 0 };
@@ -429,10 +502,12 @@ void Server::handleReq(int clientSocket) {
 
             if(checkPermission(com_vector[1],username)==1)
             {
-               response=handleLoadDB(com_vector[1]);
+               response = handleLoadDB(com_vector[1]);
+               hasPermission = 1;
             }
             else{
                 response="Permission to access "+com_vector[1]+" not granted. Try again!\n";
+                hasPermission = 0;
             }
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
@@ -455,6 +530,22 @@ void Server::handleReq(int clientSocket) {
          if(com_vector[0]=="delete" && com_vector[1]=="from"&& com_vector[3]=="where")
         {   
             std::string response=handleDelete(com_vector[2],com_vector);
+            send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
+        }
+
+        if(com_vector[0] == "allow")
+        {   
+            std::string response;
+
+            if(hasPermission == 1)
+            {
+                response = handleAllow(com_vector);
+            }
+            else
+            {
+                response = "Permission not granted to allow users!\n";
+            }
             send(clientSocket, response.c_str(),response.size(), 0);
             ok=1;
         }
