@@ -45,15 +45,14 @@ std::string Server::handleLogin(std::string user,std::string pass)
 
 std::string Server::handleAllow(std::vector<std::string> userstoAllow)
 {
-    if (userstoAllow.size() < 3) { // Ensure we have "allow", dbName, and at least one user
+    if (userstoAllow.size() < 3) 
+    { 
         return "Error: Invalid command format. Usage: allow <dbname> <user1> <user2> ...";
     }
 
-    // Extract the database name and users to allow
     std::string dbName = userstoAllow[1];
-    std::unordered_set<std::string> newUsers(userstoAllow.begin() + 2, userstoAllow.end()); // Skip "allow" and dbName
+    std::unordered_set<std::string> newUsers(userstoAllow.begin() + 2, userstoAllow.end());//skip allow and dbname
 
-    // Read the existing permissions from perm.txt
     std::ifstream permsFile("perm.txt");
     if (!permsFile.is_open()) {
         return "Error: Could not open perm.txt file.";
@@ -78,12 +77,10 @@ std::string Server::handleAllow(std::vector<std::string> userstoAllow)
                 existingUsers.insert(user);
             }
 
-            // Add new users to the set
             for (const auto& newUser : newUsers) {
                 existingUsers.insert(newUser);
             }
 
-            // Reconstruct the line with updated users
             std::ostringstream updatedLine;
             updatedLine << dbName;
             for (const auto& user : existingUsers) {
@@ -91,7 +88,7 @@ std::string Server::handleAllow(std::vector<std::string> userstoAllow)
             }
             fileContents.push_back(updatedLine.str());
         } else {
-            // Keep lines of other databases unchanged
+            // keep lines of other databases unchanged
             fileContents.push_back(line);
         }
     }
@@ -211,7 +208,7 @@ std::string Server::insertRow(const std::string& tableName, const std::unordered
 {
     std::string response;
     if (!db->tableExists(tableName)) 
-    {   response="Table "+tableName+" does not exists.\n";
+    {   response="Table "+tableName+" does not exist.\n";
         return response;
     }
 
@@ -274,7 +271,7 @@ std::string Server::handlePrintTable(const std::string &tableName)
     {   tab=db->getTable(tableName).printTable();
         return tab;
     }
-    tab="Table "+tableName+" does not exists!\n";
+    tab="Table "+tableName+" does not exist!\n";
     return tab;
 }
 
@@ -370,7 +367,7 @@ std::string Server::handleUpdate(std::string tableName, std::vector<std::string>
 {
     std::string response;
     if (!db->tableExists(tableName)) 
-    {   response="Table "+tableName+" does not exists.\n";
+    {   response="Table "+tableName+" does not exist.\n";
         return response;
     }
 
@@ -402,7 +399,7 @@ std::string Server::handleDelete(std::string tableName, std::vector<std::string>
 {
     std::string response;
     if (!db->tableExists(tableName)) 
-    {   response="Table "+tableName+" does not exists.\n";
+    {   response="Table "+tableName+" does not exist.\n";
         return response;
     }
 
