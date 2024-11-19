@@ -4,6 +4,10 @@ create_table tableName [columnName,type] [columnName,type] ...
 
 insert tableName columnName:value columnName:value ...
 
+add_column tablename columnName type
+
+delete_column tablename columnName
+
 print_table tableName
 
 save dbName
@@ -18,5 +22,3 @@ delete from tableName where condition
 allow dbName user1 user2 ...
 
 deny dbName user1 user2 ...
-
-
