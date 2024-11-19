@@ -249,6 +249,14 @@ std::string Table::deleteRow(std::string colCond,std::string op,std::string valu
     return response;
 }
 
+void  Table::add_column(std::string columnname, std::string type)
+{   
+    Column new_column(columnname,type);
+    int size_max=columns.begin()->second.getRows().size();
+    std::cout<<size_max;
+    columns[columnname]=new_column; 
+}
+
 std::string Table::updateRow(std::string colSet, std::string valueSet, std::string colCond, std::string op, std::string valueCond)
 {
     int index=0,ok_cond=0,ok_set=0,count=0;

@@ -44,6 +44,8 @@ class Table{
 
     std::string deleteRow(std::string colCond,std::string op,std::string valueCond);
 
+    void add_column(std::string columnname,std::string type);
+
     ~Table()
     {
         name="";

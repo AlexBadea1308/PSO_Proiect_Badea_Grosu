@@ -418,6 +418,30 @@ std::string Server::handleDelete(std::string tableName, std::vector<std::string>
     return table.deleteRow(colCond,op,valueCond);
 }
 
+std::string Server::handleAddColumn(std::string tablename,std::vector<std::string>com_vector)
+{
+    if(db->hasTable(tablename)==false)
+    {
+        return std::string("Table does not exist!\n");
+    }
+
+    if(db->getAllTables()[tablename].hasColumn(com_vector[1])==true)
+    {
+        return std::string("Column already exist!\n");
+    }
+    std::string columnname=com_vector[2];
+    std::string type=com_vector[3];
+    std::cout<<"test";
+    if(type=="INT"|| type=="int" || type=="DATE" || type=="date"|| type.find("nvarchar(") == 0 && type.back() == ')'||type.find("NVARCHAR(") == 0 && type.back() == ')')
+        {
+           db->add_column(tablename,columnname,type);
+            return std::string("Column add succsessfully!\n");
+        }
+        else
+        {
+            return std::string("Invalid data type in column!\n");
+        }
+}
 bool Server::Initialize(int port) {
 
     int addrlen = sizeof(address);
@@ -541,10 +565,8 @@ void Server::handleReq(int clientSocket) {
 
        if(com_vector[0]=="create_table"&& com_vector[1].find("[")!=0)
        {    
-            db->create_table(com_vector[1],com_vector);
-            std::cout<<"Table created successfully!\n";
-            std::string response = "Table created successfully!\n";
-            send(clientSocket, response.c_str(),response.size(), 0);
+            std::string response=db->create_table(com_vector[1],com_vector);
+            send(clientSocket,response.c_str(),response.size(), 0);
             ok=1;
        }
 
@@ -644,6 +666,13 @@ void Server::handleReq(int clientSocket) {
             std::string response = readFileToString("help.txt");
 
             send(clientSocket, response.c_str(),response.size(), 0);
+            ok=1;
+        }
+
+         if(com_vector[0]=="add_column")
+        {   
+            std::string response=handleAddColumn(com_vector[1],com_vector);
+            send(clientSocket,response.c_str(),response.size(),0);
             ok=1;
         }
 

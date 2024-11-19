@@ -1,10 +1,10 @@
 #include "Database.h"
 #include<sys/types.h>
 
-void Database::create_table(std::string tableName, std::vector<std::string> cols)
+std::string Database::create_table(std::string tableName, std::vector<std::string> cols)
 {  
     Table* new_table = new Table(tableName);
-
+    int ok=1;
     for(auto& i : cols)
     {
         size_t start = i.find('[');
@@ -23,14 +23,23 @@ void Database::create_table(std::string tableName, std::vector<std::string> cols
             std::cerr<<"error\n";
         
         }
-
-        new_table->createColumn(colname,type);
-        
+        if(type=="INT"|| type=="int" || type=="DATE" || type=="date"|| type.find("nvarchar(") == 0 && type.back() == ')'||type.find("NVARCHAR(") == 0 && type.back() == ')')
+        {
+            new_table->createColumn(colname,type);
+        }
+        else
+        {
+             ok=0;
+            break;
+        }
     }
 
-    tables[tableName] = *new_table;
-
-    return;
+    if(ok==1)
+    {
+        tables[tableName] = *new_table;
+        return std::string("Table create succsessfully!\n");
+    }
+    return std::string("Problem at columns type! Check it!\n");
 }
 
 void Database::setName(const std::string& dbname)
@@ -65,4 +74,9 @@ void Database::create_table_from_load(std::string nume_tabel, std::string column
 bool Database::hasTable(std::string tableName)
 {
     return tables.find(tableName) != tables.end();
+}
+
+void Database::add_column(std::string tablename, std::string columnname, std::string type)
+{
+    tables[tablename].add_column(columnname,type);
 }

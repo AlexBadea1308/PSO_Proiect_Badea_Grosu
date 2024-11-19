@@ -65,4 +65,5 @@ public:
 
     bool checkPermission(std::string dbName, std::string user);
 
+    std::string handleAddColumn(std::string tablename,std::vector<std::string>com_vector);
 };
