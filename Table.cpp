@@ -252,8 +252,20 @@ std::string Table::deleteRow(std::string colCond,std::string op,std::string valu
 void  Table::add_column(std::string columnname, std::string type)
 {   
     Column new_column(columnname,type);
-    int size_max=columns.begin()->second.getRows().size();
-    std::cout<<size_max;
+    int maxsize=0;
+    for(auto &it: columns)
+    {
+        if(maxsize<it.second.getSizeRows())
+            maxsize=it.second.getSizeRows();
+    }
+
+    if(maxsize>0)
+    {
+        for(int i=0;i<maxsize;i++)
+        {
+            new_column.addRow("NULL");
+        }
+    }
     columns[columnname]=new_column; 
 }
 

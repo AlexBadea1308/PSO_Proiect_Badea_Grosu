@@ -67,6 +67,10 @@ bool Column::validateDate(const std::string &value)
     }
     return true;
 }
+int Column::getSizeRows()
+{
+    return rows.size();
+}
 bool Column::validateInt(const std::string &value)
 {   
 

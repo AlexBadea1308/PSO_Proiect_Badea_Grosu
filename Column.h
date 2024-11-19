@@ -32,4 +32,5 @@ class Column{
         bool validateInt(const std::string& value);
         bool validateNvarchar(const std::string& value, int maxLength);
         bool validateDate(const std::string& value);
+        int getSizeRows();
 };
