@@ -425,13 +425,12 @@ std::string Server::handleAddColumn(std::string tablename,std::vector<std::strin
         return std::string("Table does not exist!\n");
     }
 
-    if(db->getAllTables()[tablename].hasColumn(com_vector[1])==true)
+    if(db->getAllTables()[tablename].hasColumn(com_vector[2])==true)
     {
         return std::string("Column already exist!\n");
     }
     std::string columnname=com_vector[2];
     std::string type=com_vector[3];
-    std::cout<<"test";
     if(type=="INT"|| type=="int" || type=="DATE" || type=="date"|| type.find("nvarchar(") == 0 && type.back() == ')'||type.find("NVARCHAR(") == 0 && type.back() == ')')
         {
            db->add_column(tablename,columnname,type);
@@ -441,6 +440,23 @@ std::string Server::handleAddColumn(std::string tablename,std::vector<std::strin
         {
             return std::string("Invalid data type in column!\n");
         }
+}
+
+std::string Server::handleDeleteColumn(std::string tablename,std::vector<std::string> com_vector)
+{
+    if(db->hasTable(tablename)==false)
+    {
+        return std::string("Table does not exist!\n");
+    }
+
+    if(db->getAllTables()[tablename].hasColumn(com_vector[2])==false)
+    {   
+        return std::string("Column does not exist!\n");
+    }
+    std::string columnname=com_vector[2];
+
+    db->delete_column(tablename,columnname);
+    return std::string("Column delete successfully!\n");
 }
 bool Server::Initialize(int port) {
 
@@ -672,6 +688,13 @@ void Server::handleReq(int clientSocket) {
          if(com_vector[0]=="add_column")
         {   
             std::string response=handleAddColumn(com_vector[1],com_vector);
+            send(clientSocket,response.c_str(),response.size(),0);
+            ok=1;
+        }
+
+          if(com_vector[0]=="delete_column")
+        {   
+            std::string response=handleDeleteColumn(com_vector[1],com_vector);
             send(clientSocket,response.c_str(),response.size(),0);
             ok=1;
         }

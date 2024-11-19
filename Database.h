@@ -38,6 +38,8 @@ class Database {
         bool hasTable(std::string tableName);
 
         void add_column(std::string tablename,std::string columnname, std::string type);
+
+        void delete_column(std::string tablename,std::string columnanme);
         
         ~Database()
         {

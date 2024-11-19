@@ -80,3 +80,8 @@ void Database::add_column(std::string tablename, std::string columnname, std::st
 {
     tables[tablename].add_column(columnname,type);
 }
+
+void Database::delete_column(std::string tablename, std::string columnanme)
+{
+    tables[tablename].delete_column(columnanme);
+}

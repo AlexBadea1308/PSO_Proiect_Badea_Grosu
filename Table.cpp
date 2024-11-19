@@ -269,6 +269,14 @@ void  Table::add_column(std::string columnname, std::string type)
     columns[columnname]=new_column; 
 }
 
+void Table::delete_column(std::string colname)
+{   
+   auto it = columns.find(colname);
+    if (it != columns.end()) {
+        columns.erase(it);
+    }
+}
+
 std::string Table::updateRow(std::string colSet, std::string valueSet, std::string colCond, std::string op, std::string valueCond)
 {
     int index=0,ok_cond=0,ok_set=0,count=0;

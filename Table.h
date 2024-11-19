@@ -46,6 +46,8 @@ class Table{
 
     void add_column(std::string columnname,std::string type);
 
+    void delete_column(std::string colname);
+
     ~Table()
     {
         name="";
