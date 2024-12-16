@@ -1,11 +1,5 @@
 #include "Server.h"
 
-void Server::handleHello(int clientSocket)
-{   
-    std::string helloString = "Hello Client!\n";
-    send(clientSocket, helloString.c_str(),helloString.size(), 0);
-}
-
 std::string readFileToString(const std::string& filePath) {
     std::ifstream file(filePath);
 
@@ -505,7 +499,6 @@ ClientConnection Server::AcceptConnections() {
     int clientSocket = accept(serverSocket, (struct sockaddr *)&address, (socklen_t*)&addrlen);
     if (clientSocket < 0) {
         std::cerr << "Accept failed\n";
-        //exit(1);
     }
 
     std::cout << "Client connected\n";
@@ -518,7 +511,6 @@ ClientConnection Server::AcceptConnections() {
 
 Server::~Server() {
     close(serverSocket);
-    //free(db);
 }
 
 std::string getUser(int clientSocket)
