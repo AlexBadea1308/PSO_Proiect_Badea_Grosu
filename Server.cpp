@@ -1,5 +1,7 @@
 #include "Server.h"
 
+extern std::unordered_map<std::string,std::mutex*> mutex_db;
+
 std::string readFileToString(const std::string& filePath) {
     std::ifstream file(filePath);
 
@@ -573,15 +575,27 @@ void Server::handleReq(int clientSocket) {
 
        if(com_vector[0]=="create_table"&& com_vector[1].find("[")!=0)
        {    
+            //mutex_db[db->getName()]->lock();
+            handleLoadDB(db->getName());
+            std::cout<<"Creating table!\n";
+            sleep(5);
             std::string response=db->create_table(com_vector[1],com_vector);
             send(clientSocket,response.c_str(),response.size(), 0);
+            handleSave(db->getName());
+            //mutex_db[db->getName()]->unlock();
             ok=1;
        }
 
         if(com_vector[0]=="insert"&& db->hasTable(com_vector[1]))
        {    
+            mutex_db[db->getName()]->lock();
+            handleLoadDB(db->getName());
+            std::cout<<"Inserting table!\n";
+            sleep(5);
             std::string response=handleInsert(com_vector[1],com_vector);
             send(clientSocket, response.c_str(),response.size(), 0);
+            handleSave(db->getName());
+            mutex_db[db->getName()]->unlock();
             ok=1;
        }
 
@@ -601,12 +615,16 @@ void Server::handleReq(int clientSocket) {
        }
           if(com_vector[0]=="load")
        {    std::string response;
-            std::string username = getUser(clientSocket);
+            std::string username = getUser(clientSocket); 
 
             if(checkPermission(com_vector[1],username)==1)
             {
                response = handleLoadDB(com_vector[1]);
                allowedDb = com_vector[1];
+               if(mutex_db.find(com_vector[1])!=mutex_db.end())
+               {
+                mutex_db[com_vector[1]] =new std::mutex;
+               }
             }
             else{
                 response="Permission to access "+com_vector[1]+" not granted. Try again!\n";
@@ -732,4 +750,3 @@ void Server::handleClient(const ClientConnection& client) {
         }
     }
 }
-

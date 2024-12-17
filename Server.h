@@ -15,14 +15,12 @@
 #include <vector>
 #include <sstream>
 
-
 class Server {
 private:
     int serverSocket;
     struct sockaddr_in address;
     std::string last_event;
     Database* db;
-
 public:
 
     Server() { db=new Database();}
