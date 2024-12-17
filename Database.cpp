@@ -3,6 +3,10 @@
 
 std::string Database::create_table(std::string tableName, std::vector<std::string> cols)
 {  
+    if(tableExists(tableName))
+    {
+        return std::string("Table already exists!\n");
+    }
     Table* new_table = new Table(tableName);
     int ok=1;
     for(auto& i : cols)
@@ -37,7 +41,7 @@ std::string Database::create_table(std::string tableName, std::vector<std::strin
     if(ok==1)
     {
         tables[tableName] = *new_table;
-        return std::string("Table create succsessfully!\n");
+        return std::string("Table created succsessfully!\n");
     }
     return std::string("Problem at columns type! Check it!\n");
 }

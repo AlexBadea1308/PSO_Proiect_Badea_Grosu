@@ -2,7 +2,10 @@
 #define NUM_CLIENTS 20
 #define PORT 12345
 #include "Server.h"
+#include <unordered_map>
+#include<mutex>
 
+std::unordered_map<std::string,std::mutex*> mutex_db;
 
 int main() {
     Server server;
@@ -17,7 +20,6 @@ int main() {
         ClientConnection clientconn = server.AcceptConnections();
 
         clientThreads.emplace_back([&server, clientconn = std::move(clientconn)]() { server.handleClient( std::move(clientconn)); });
-
     }
 
     for (auto& thread : clientThreads) 
