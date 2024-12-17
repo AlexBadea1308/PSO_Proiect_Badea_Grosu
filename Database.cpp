@@ -37,9 +37,9 @@ std::string Database::create_table(std::string tableName, std::vector<std::strin
     if(ok==1)
     {
         tables[tableName] = *new_table;
-        return std::string("Table created successfully!\n");
+        return std::string("Table create succsessfully!\n");
     }
-    return std::string("Problem at column type! Check it!\n");
+    return std::string("Problem at columns type! Check it!\n");
 }
 
 void Database::setName(const std::string& dbname)
