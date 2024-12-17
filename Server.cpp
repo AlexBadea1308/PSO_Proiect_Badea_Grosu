@@ -573,12 +573,12 @@ void Server::handleReq(int clientSocket) {
 
        if(com_vector[0]=="create_table"&& com_vector[1].find("[")!=0)
        {    
-            handleLoadDB(db->getName());
+            
             std::cout<<"Creating table!\n";
-            sleep(5);
+
             std::string response=db->create_table(com_vector[1],com_vector);
             send(clientSocket,response.c_str(),response.size(), 0);
-            handleSave(db->getName());
+
             ok=1;
        }
 
