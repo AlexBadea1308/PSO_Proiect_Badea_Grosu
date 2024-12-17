@@ -575,14 +575,14 @@ void Server::handleReq(int clientSocket) {
 
        if(com_vector[0]=="create_table"&& com_vector[1].find("[")!=0)
        {    
-            mutex_db[db->getName()]->lock();
+            //mutex_db[db->getName()]->lock();
             handleLoadDB(db->getName());
             std::cout<<"Creating table!\n";
             sleep(5);
             std::string response=db->create_table(com_vector[1],com_vector);
             send(clientSocket,response.c_str(),response.size(), 0);
             handleSave(db->getName());
-            mutex_db[db->getName()]->unlock();
+            //mutex_db[db->getName()]->unlock();
             ok=1;
        }
 
