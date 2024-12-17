@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include<mutex>
 
-std::unordered_map<std::string,std::mutex*> mutex_db;
 
 int main() {
     Server server;
