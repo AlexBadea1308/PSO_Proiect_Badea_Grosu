@@ -20,10 +20,12 @@ private:
     int serverSocket;
     struct sockaddr_in address;
     std::string last_event;
-    Database* db;
+    static thread_local  Database* db;
 public:
 
-    Server() { db=new Database();}
+    Server() 
+    { if (!db) 
+      db = new Database(); }
 
     ~Server();
 

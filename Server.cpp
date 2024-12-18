@@ -1,5 +1,7 @@
 #include "Server.h"
 
+thread_local Database* Server::db = nullptr;
+
 std::string readFileToString(const std::string& filePath) {
     std::ifstream file(filePath);
 
@@ -539,6 +541,11 @@ std::string allowedDb = "";
 
 void Server::handleReq(int clientSocket) {
     char buffer[1024] = { 0 };
+
+    if (!db) 
+    {
+        db = new Database();
+    }
     
     int bytesReceived = read(clientSocket, buffer, sizeof(buffer));
 
