@@ -589,6 +589,23 @@ void Server::handleReq(int clientSocket) {
             ok=1;
        }
 
+    //     if(com_vector[0]=="create_table" && com_vector[1].find("[")!=0)
+    //         {
+    //             std::lock_guard<std::mutex> lock(dbMutex); // Ensure thread-safe access
+    //             //handleLoadDB(db->getName());
+
+    //     // Create the table
+    //     std::cout << "Creating table!\n";
+    //     std::string response = db->create_table(com_vector[1], com_vector);
+
+    //     // Immediately save the changes
+    //     std::string saveResponse = handleSave(db->getName());
+
+    //     // Send response to client
+    //     send(clientSocket, response.c_str(), response.size(), 0);
+    //     ok = 1;
+    // }
+
         if(com_vector[0]=="insert"&& db->hasTable(com_vector[1]))
        {    
             std::cout<<"Inserting table!\n";

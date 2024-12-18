@@ -20,6 +20,7 @@ private:
     int serverSocket;
     struct sockaddr_in address;
     std::string last_event;
+    std::mutex dbMutex;
     static thread_local  Database* db;
 public:
 
