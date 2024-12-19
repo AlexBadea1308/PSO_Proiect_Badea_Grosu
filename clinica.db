@@ -1,7 +1,8 @@
 *
 doctori
-age INT  22 40 50 31
-nume NVARCHAR(200)  pop anghel meclea axi
+age INT  40 50 31 45
+nume NVARCHAR(200)  anghel meclea axi virgil
+spec nvarchar(20)  general general general general
 *
 pacienti
 adresa NVARCHAR(200)  viilor dudu floreasca

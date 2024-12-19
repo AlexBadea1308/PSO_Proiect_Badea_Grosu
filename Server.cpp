@@ -614,7 +614,7 @@ void Server::handleReq(int clientSocket) {
             std::cout<<response<<std::endl;
             send(clientSocket, response.c_str(),response.size(), 0);
 
-            handleSave(db->getName());
+            handleSave(db->getName()); //nu e neaparat necesar
             ok=1;
        }
 
