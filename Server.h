@@ -21,7 +21,7 @@ private:
     struct sockaddr_in address;
     std::string last_event;
     static thread_local  Database* db;
-    std::mutex mtx;
+    static std::mutex file_mutex;
 public:
 
     Server() 

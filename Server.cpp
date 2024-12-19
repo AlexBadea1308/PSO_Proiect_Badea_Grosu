@@ -1,7 +1,7 @@
 #include "Server.h"
 
 thread_local Database* Server::db = nullptr;
-
+std::mutex Server::file_mutex;
 
 std::string readFileToString(const std::string& filePath) {
     std::ifstream file(filePath);
@@ -274,12 +274,12 @@ std::string Server::handlePrintTable(const std::string &tableName)
 
 std::string Server::handleSave(std::string db_name)
 {   
+    std::lock_guard<std::mutex> lock(file_mutex);
     if (db_name!=db->getName())
     {   
         
         return std::string("You selected the wrong database to save!\n");
     }
-
     std::string filename = db_name + ".db";
     std::ofstream outFile(filename);
 
@@ -589,7 +589,7 @@ void Server::handleReq(int clientSocket) {
 
             if(response == "Table created successfully!\n")
                 handleSave(db->getName());
-
+            sleep(5);
             send(clientSocket,response.c_str(),response.size(), 0);
             ok=1;
        }
