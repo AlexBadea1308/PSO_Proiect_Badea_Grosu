@@ -2,6 +2,7 @@
 
 thread_local Database* Server::db = nullptr;
 
+
 std::string readFileToString(const std::string& filePath) {
     std::ifstream file(filePath);
 
@@ -272,7 +273,7 @@ std::string Server::handlePrintTable(const std::string &tableName)
 }
 
 std::string Server::handleSave(std::string db_name)
-{
+{   
     if (db_name!=db->getName())
     {   
         
@@ -310,7 +311,7 @@ std::string Server::handleSave(std::string db_name)
 }
 
 std::string Server::handleLoadDB(std::string db_name) 
-{
+{   
     std::string filename = db_name + ".db";
     std::ifstream inFile(filename);
 
@@ -354,7 +355,6 @@ std::string Server::handleLoadDB(std::string db_name)
             }
         }
     }
-
     inFile.close();
     return "Database loaded successfully!";
 }
@@ -581,44 +581,40 @@ void Server::handleReq(int clientSocket) {
        if(com_vector[0]=="create_table"&& com_vector[1].find("[")!=0)
        {    
             
+            std::string loadStat = handleLoadDB(db->getName());
+
             std::cout<<"Creating table!\n";
 
             std::string response=db->create_table(com_vector[1],com_vector);
-            send(clientSocket,response.c_str(),response.size(), 0);
 
+            if(response == "Table created successfully!\n")
+                handleSave(db->getName());
+
+            send(clientSocket,response.c_str(),response.size(), 0);
             ok=1;
        }
 
-    //     if(com_vector[0]=="create_table" && com_vector[1].find("[")!=0)
-    //         {
-    //             std::lock_guard<std::mutex> lock(dbMutex); // Ensure thread-safe access
-    //             //handleLoadDB(db->getName());
-
-    //     // Create the table
-    //     std::cout << "Creating table!\n";
-    //     std::string response = db->create_table(com_vector[1], com_vector);
-
-    //     // Immediately save the changes
-    //     std::string saveResponse = handleSave(db->getName());
-
-    //     // Send response to client
-    //     send(clientSocket, response.c_str(), response.size(), 0);
-    //     ok = 1;
-    // }
 
         if(com_vector[0]=="insert"&& db->hasTable(com_vector[1]))
        {    
+            std::string loadStat = handleLoadDB(db->getName());
             std::cout<<"Inserting table!\n";
             std::string response=handleInsert(com_vector[1],com_vector);
             send(clientSocket, response.c_str(),response.size(), 0);
+
+            handleSave(db->getName());
+
             ok=1;
        }
 
        if(com_vector[0]=="print_table")
        {    
+            std::string loadStat = handleLoadDB(db->getName());
             std::string response = handlePrintTable(com_vector[1]);
             std::cout<<response<<std::endl;
             send(clientSocket, response.c_str(),response.size(), 0);
+
+            handleSave(db->getName());
             ok=1;
        }
 
@@ -654,15 +650,19 @@ void Server::handleReq(int clientSocket) {
 
          if(com_vector[0]=="update"&& com_vector[2]=="set"&& com_vector[6]=="where")
         {   
+            std::string loadStat(db->getName());
             std::string response=handleUpdate(com_vector[1],com_vector);
             send(clientSocket, response.c_str(),response.size(), 0);
+            handleSave(db->getName());
             ok=1;
         }
 
          if(com_vector[0]=="delete" && com_vector[1]=="from"&& com_vector[3]=="where")
         {   
+            std::string loadStat = handleLoadDB(db->getName());
             std::string response=handleDelete(com_vector[2],com_vector);
             send(clientSocket, response.c_str(),response.size(), 0);
+            handleSave(db->getName());
             ok=1;
         }
 
@@ -708,15 +708,19 @@ void Server::handleReq(int clientSocket) {
 
          if(com_vector[0]=="add_column")
         {   
+            std::string loadStat = handleLoadDB(db->getName());
             std::string response=handleAddColumn(com_vector[1],com_vector);
             send(clientSocket,response.c_str(),response.size(),0);
+            handleSave(db->getName());
             ok=1;
         }
 
           if(com_vector[0]=="delete_column")
         {   
+            std::string loadStat = handleLoadDB(db->getName());
             std::string response=handleDeleteColumn(com_vector[1],com_vector);
             send(clientSocket,response.c_str(),response.size(),0);
+            handleSave(db->getName());
             ok=1;
         }
 

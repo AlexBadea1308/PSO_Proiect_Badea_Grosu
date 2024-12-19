@@ -20,13 +20,13 @@ private:
     int serverSocket;
     struct sockaddr_in address;
     std::string last_event;
-    std::mutex dbMutex;
     static thread_local  Database* db;
+    std::mutex mtx;
 public:
 
     Server() 
     { if (!db) 
-      db = new Database(); }
+      db = new Database();}
 
     ~Server();
 
