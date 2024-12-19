@@ -589,7 +589,7 @@ void Server::handleReq(int clientSocket) {
 
             if(response == "Table created successfully!\n")
                 handleSave(db->getName());
-            sleep(5);
+            
             send(clientSocket,response.c_str(),response.size(), 0);
             ok=1;
        }

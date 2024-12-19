@@ -1,9 +1,9 @@
 *
-pacienti
-adresa NVARCHAR(200)  viilor dudu floreasca
-nume NVARCHAR(7)  badea grosu babi
-*
 doctori
 age INT  22 40 50 31
 nume NVARCHAR(200)  pop anghel meclea axi
+*
+pacienti
+adresa NVARCHAR(200)  viilor dudu floreasca
+nume NVARCHAR(7)  badea grosu babi
 *
