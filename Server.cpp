@@ -290,8 +290,7 @@ std::string Server::handleSave(std::string db_name)
 
     for (const auto& table : db->getAllTables())
     {
-        outFile <<"*\n"
-        <<table.first<< "\n";
+        outFile <<"*\n"<<table.first<< "\n";
         Table t=table.second;
         for (auto& column : t.getAllColumns())
         {   
