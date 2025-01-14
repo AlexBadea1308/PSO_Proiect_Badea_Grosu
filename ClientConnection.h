@@ -17,10 +17,6 @@ public:
 
     ClientConnection(int socket) : clientSocket(socket) {}
 
-    int Receive(char* buffer, int bufferSize);
-
-    int Send(const char* data, int dataSize);
-
     ~ClientConnection();
 
     int getClientSocket()const;
