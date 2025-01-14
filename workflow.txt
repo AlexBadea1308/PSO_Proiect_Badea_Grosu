@@ -2,4 +2,7 @@ Se va verifica users.txt pentru login cu un user disponibil.
 Se va da load la o baza de date dorita, la care userul are acces (perm.txt), folosind comanda "load dbName".
 Pentru a afisa sintaxa comenzilor, accesati meniul de help folosind comanda "?".
 
+./servertest pentru a rula server-ul.
+./sandboxClient pentru a rula aplicatia client.
+
 :)
